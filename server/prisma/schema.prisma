@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户表
+model User {
+  id        Int      @id @default(autoincrement())
+  openid    String   @unique
+  nickname  String?
+  avatar    String?
+  role      String   @default("student")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  // 关联关系
+  learningRecords LearningRecord[]
+  
+  @@map("users")
+}
+
+// 题目表
+model Question {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String   @db.Text
+  type        String   // single, multiple, fill, essay
+  options     Json?    // 选择题选项
+  answer      String   @db.Text
+  explanation String?  @db.Text
+  category    String
+  difficulty  String   @default("medium")
+  imageUrl    String?  @map("image_url")
+  videoUrl    String?  @map("video_url")      // 题目讲解视频URL
+  videoDuration Int?   @map("video_duration") // 视频时长（秒）
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  // 关联关系
+  learningRecords LearningRecord[]
+  
+  @@map("questions")
+}
+
+// 视频表
+model Video {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?  @db.Text
+  fileUrl      String   @map("file_url")
+  duration     Int?     // 秒数
+  category     String
+  thumbnailUrl String?  @map("thumbnail_url")
+  fileSize     BigInt?  @map("file_size")
+  createdAt    DateTime @default(now()) @map("created_at")
+  
+  // 关联关系
+  learningRecords LearningRecord[]
+  
+  @@map("videos")
+}
+
+// 学习记录表
+model LearningRecord {
+  id          Int       @id @default(autoincrement())
+  userId      Int       @map("user_id")
+  contentId   Int       @map("content_id")
+  contentType String    @map("content_type") // question, video
+  progress    Float     @default(0) // 0-100
+  score       Int?      // 答题得分
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  
+  // 关联关系
+  user     User      @relation(fields: [userId], references: [id])
+  question Question? @relation(fields: [contentId], references: [id], map: "learning_records_question_id_fkey")
+  video    Video?    @relation(fields: [contentId], references: [id], map: "learning_records_video_id_fkey")
+  
+  @@unique([userId, contentId, contentType])
+  @@map("learning_records")
+}
+
+// 管理员表
+model Admin {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@map("admins")
+}

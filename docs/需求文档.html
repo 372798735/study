@@ -1,221 +1,231 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>教育类微信小程序需求文档</title>
     <style>
-        @page {
-            size: A4;
-            margin: 2cm;
-        }
-        
+      @page {
+        size: A4;
+        margin: 2cm;
+      }
+
+      body {
+        font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        color: #1976d2;
+        border-bottom: 3px solid #1976d2;
+        padding-bottom: 10px;
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        color: #1976d2;
+        border-bottom: 2px solid #bbdefb;
+        padding-bottom: 8px;
+        margin-top: 30px;
+        margin-bottom: 20px;
+        font-size: 22px;
+      }
+
+      h3 {
+        color: #1565c0;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        font-size: 18px;
+      }
+
+      h4 {
+        color: #0d47a1;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      ul,
+      ol {
+        margin: 10px 0;
+        padding-left: 30px;
+      }
+
+      li {
+        margin-bottom: 8px;
+      }
+
+      strong {
+        color: #1976d2;
+        font-weight: 600;
+      }
+
+      code,
+      pre {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: "Courier New", monospace;
+      }
+
+      code {
+        padding: 2px 4px;
+        font-size: 90%;
+      }
+
+      pre {
+        padding: 15px;
+        overflow-x: auto;
+        margin: 15px 0;
+        white-space: pre-wrap;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 15px 0;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+      }
+
+      .toc {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 20px 0;
+      }
+
+      .toc h2 {
+        margin-top: 0;
+        color: #495057;
+        border: none;
+        font-size: 18px;
+      }
+
+      .toc ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .toc > ul > li {
+        margin-bottom: 10px;
+      }
+
+      .toc ul ul {
+        padding-left: 20px;
+        margin-top: 5px;
+      }
+
+      .toc a {
+        color: #1976d2;
+        text-decoration: none;
+      }
+
+      .toc a:hover {
+        text-decoration: underline;
+      }
+
+      .page-break {
+        page-break-before: always;
+      }
+
+      .highlight-box {
+        background: #e3f2fd;
+        border-left: 4px solid #1976d2;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 4px;
+      }
+
+      .checkbox-list {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      .checkbox-list li::before {
+        content: "☐ ";
+        color: #1976d2;
+        font-weight: bold;
+        margin-right: 5px;
+      }
+
+      .footer {
+        margin-top: 50px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+      }
+
+      @media print {
         body {
-            font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        h1 {
-            color: #1976D2;
-            border-bottom: 3px solid #1976D2;
-            padding-bottom: 10px;
-            text-align: center;
-            font-size: 28px;
-            margin-bottom: 30px;
-        }
-        
-        h2 {
-            color: #1976D2;
-            border-bottom: 2px solid #BBDEFB;
-            padding-bottom: 8px;
-            margin-top: 30px;
-            margin-bottom: 20px;
-            font-size: 22px;
-        }
-        
-        h3 {
-            color: #1565C0;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        
-        h4 {
-            color: #0D47A1;
-            margin-top: 20px;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        ul, ol {
-            margin: 10px 0;
-            padding-left: 30px;
-        }
-        
-        li {
-            margin-bottom: 8px;
-        }
-        
-        strong {
-            color: #1976D2;
-            font-weight: 600;
-        }
-        
-        code, pre {
-            background: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        code {
-            padding: 2px 4px;
-            font-size: 90%;
-        }
-        
-        pre {
-            padding: 15px;
-            overflow-x: auto;
-            margin: 15px 0;
-            white-space: pre-wrap;
-        }
-        
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin: 15px 0;
-        }
-        
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-        
-        .toc {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .toc h2 {
-            margin-top: 0;
-            color: #495057;
-            border: none;
-            font-size: 18px;
-        }
-        
-        .toc ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        
-        .toc > ul > li {
-            margin-bottom: 10px;
-        }
-        
-        .toc ul ul {
-            padding-left: 20px;
-            margin-top: 5px;
-        }
-        
-        .toc a {
-            color: #1976D2;
-            text-decoration: none;
-        }
-        
-        .toc a:hover {
-            text-decoration: underline;
-        }
-        
-        .page-break {
-            page-break-before: always;
-        }
-        
-        .highlight-box {
-            background: #e3f2fd;
-            border-left: 4px solid #1976D2;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-        }
-        
-        .checkbox-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .checkbox-list li::before {
-            content: "☐ ";
-            color: #1976D2;
-            font-weight: bold;
-            margin-right: 5px;
-        }
-        
-        .footer {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            text-align: center;
-            color: #666;
-            font-size: 14px;
+          margin: 0;
+          padding: 15mm;
         }
 
-        @media print {
-            body {
-                margin: 0;
-                padding: 15mm;
-            }
-            
-            h1, h2, h3, h4 {
-                page-break-after: avoid;
-            }
-            
-            .toc {
-                page-break-after: always;
-            }
+        h1,
+        h2,
+        h3,
+        h4 {
+          page-break-after: avoid;
         }
+
+        .toc {
+          page-break-after: always;
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>教育类微信小程序需求文档</h1>
 
     <div class="toc">
-        <h2>目录</h2>
-        <ul>
-            <li><a href="#project-overview">1. 项目概述</a>
-                <ul>
-                    <li><a href="#project-name">1.1 项目名称</a></li>
-                    <li><a href="#project-background">1.2 项目背景</a></li>
-                    <li><a href="#project-goal">1.3 项目目标</a></li>
-                </ul>
+      <h2>目录</h2>
+      <ul>
+        <li>
+          <a href="#project-overview">1. 项目概述</a>
+          <ul>
+            <li><a href="#project-name">1.1 项目名称</a></li>
+            <li><a href="#project-background">1.2 项目背景</a></li>
+            <li><a href="#project-goal">1.3 项目目标</a></li>
+          </ul>
+        </li>
+        <li><a href="#system-architecture">2. 系统架构</a></li>
+        <li>
+          <a href="#functional-requirements">3. 功能需求</a>
+          <ul>
+            <li>
+              <a href="#miniprogram-features">3.1 微信小程序端（学生端）</a>
             </li>
-            <li><a href="#system-architecture">2. 系统架构</a></li>
-            <li><a href="#functional-requirements">3. 功能需求</a>
-                <ul>
-                    <li><a href="#miniprogram-features">3.1 微信小程序端（学生端）</a></li>
-                    <li><a href="#admin-features">3.2 PC后台管理端（老师端）</a></li>
-                </ul>
-            </li>
-            <li><a href="#user-roles">4. 用户角色定义</a></li>
-            <li><a href="#page-structure">5. 页面结构</a></li>
-            <li><a href="#data-requirements">6. 数据需求</a></li>
-            <li><a href="#non-functional-requirements">7. 非功能性需求</a></li>
-            <li><a href="#constraints">8. 约束条件</a></li>
-            <li><a href="#acceptance-criteria">9. 验收标准</a></li>
-            <li><a href="#future-plans">10. 后续扩展规划</a></li>
-        </ul>
+            <li><a href="#admin-features">3.2 PC后台管理端（老师端）</a></li>
+          </ul>
+        </li>
+        <li><a href="#user-roles">4. 用户角色定义</a></li>
+        <li><a href="#page-structure">5. 页面结构</a></li>
+        <li><a href="#data-requirements">6. 数据需求</a></li>
+        <li><a href="#non-functional-requirements">7. 非功能性需求</a></li>
+        <li><a href="#constraints">8. 约束条件</a></li>
+        <li><a href="#acceptance-criteria">9. 验收标准</a></li>
+        <li><a href="#future-plans">10. 后续扩展规划</a></li>
+      </ul>
     </div>
 
     <div class="page-break"></div>
@@ -226,17 +236,21 @@
     <p>教育练习微信小程序</p>
 
     <h3 id="project-background">项目背景</h3>
-    <p>为了方便老师上传教学资源并让学生进行在线学习和练习，开发一个简洁易用的教育类微信小程序系统。</p>
+    <p>
+      为了方便老师上传教学资源并让学生进行在线学习和练习，开发一个简洁易用的教育类微信小程序系统。
+    </p>
 
     <h3 id="project-goal">项目目标</h3>
-    <p>实现老师教学资源管理和学生在线学习的基础功能，提供简洁高效的学习体验。</p>
+    <p>
+      实现老师教学资源管理和学生在线学习的基础功能，提供简洁高效的学习体验。
+    </p>
 
     <h2 id="system-architecture">系统架构</h2>
 
     <h3>系统组成</h3>
     <ul>
-        <li><strong>微信小程序端</strong>：面向学生的学习练习平台</li>
-        <li><strong>PC后台管理端</strong>：面向老师的资源管理平台</li>
+      <li><strong>微信小程序端</strong>：面向学生的学习练习平台</li>
+      <li><strong>PC后台管理端</strong>：面向老师的资源管理平台</li>
     </ul>
 
     <div class="page-break"></div>
@@ -247,79 +261,87 @@
 
     <h4>1.1 题目练习模块</h4>
     <div class="highlight-box">
-        <strong>功能描述</strong>：学生可以浏览和练习老师上传的题目
+      <strong>功能描述</strong>：学生可以浏览和练习老师上传的题目
     </div>
 
     <p><strong>具体功能</strong>：</p>
     <ul>
-        <li><strong>题目列表展示</strong>
-            <ul>
-                <li>按科目/章节分类显示题目</li>
-                <li>显示题目标题、类型、难度等基本信息</li>
-            </ul>
-        </li>
-        <li><strong>题目详情页面</strong>
-            <ul>
-                <li>显示题目内容（文字、图片）</li>
-                <li>提供答题选项（单选、多选、填空等）</li>
-                <li>支持答案提交和查看正确答案</li>
-            </ul>
-        </li>
-        <li><strong>练习记录</strong>
-            <ul>
-                <li>显示做题历史记录</li>
-                <li>统计正确率和练习次数</li>
-            </ul>
-        </li>
+      <li>
+        <strong>题目列表展示</strong>
+        <ul>
+          <li>按科目/章节分类显示题目</li>
+          <li>显示题目标题、类型、难度等基本信息</li>
+        </ul>
+      </li>
+      <li>
+        <strong>题目详情页面</strong>
+        <ul>
+          <li>显示题目内容（文字、图片）</li>
+          <li>提供答题选项（单选、多选、填空等）</li>
+          <li>支持答案提交和查看正确答案</li>
+        </ul>
+      </li>
+      <li>
+        <strong>练习记录</strong>
+        <ul>
+          <li>显示做题历史记录</li>
+          <li>统计正确率和练习次数</li>
+        </ul>
+      </li>
     </ul>
 
     <h4>1.2 视频学习模块</h4>
     <div class="highlight-box">
-        <strong>功能描述</strong>：学生可以观看老师上传的录播课程
+      <strong>功能描述</strong>：学生可以观看老师上传的录播课程
     </div>
 
     <p><strong>具体功能</strong>：</p>
     <ul>
-        <li><strong>视频列表展示</strong>
-            <ul>
-                <li>按科目/章节分类显示视频</li>
-                <li>显示视频标题、时长、上传时间等信息</li>
-            </ul>
-        </li>
-        <li><strong>视频播放页面</strong>
-            <ul>
-                <li>支持在线播放录播课程</li>
-                <li>基础播放控制（播放、暂停、进度调节、音量调节）</li>
-                <li>支持倍速播放</li>
-            </ul>
-        </li>
-        <li><strong>学习记录</strong>
-            <ul>
-                <li>记录视频观看进度</li>
-                <li>显示学习历史</li>
-            </ul>
-        </li>
+      <li>
+        <strong>视频列表展示</strong>
+        <ul>
+          <li>按科目/章节分类显示视频</li>
+          <li>显示视频标题、时长、上传时间等信息</li>
+        </ul>
+      </li>
+      <li>
+        <strong>视频播放页面</strong>
+        <ul>
+          <li>支持在线播放录播课程</li>
+          <li>基础播放控制（播放、暂停、进度调节、音量调节）</li>
+          <li>支持倍速播放</li>
+        </ul>
+      </li>
+      <li>
+        <strong>学习记录</strong>
+        <ul>
+          <li>记录视频观看进度</li>
+          <li>显示学习历史</li>
+        </ul>
+      </li>
     </ul>
 
     <h4>1.3 个人中心模块</h4>
     <div class="highlight-box">
-        <strong>功能描述</strong>：学生个人信息和学习数据管理
+      <strong>功能描述</strong>：学生个人信息和学习数据管理
     </div>
 
     <p><strong>具体功能</strong>：</p>
     <ul>
-        <li><strong>个人信息展示</strong>
-            <ul>
-                <li>显示学生基本信息（头像、昵称）</li>
-            </ul>
-        </li>
-        <li><strong>学习统计</strong>
-            <ul>
-                <li>显示总学习时长</li>
-                <li>显示总练习题数和正确率</li>
-                <li>显示最近学习记录</li>
-            </ul>
-        </li>
+      <li>
+        <strong>个人信息展示</strong>
+        <ul>
+          <li>显示学生基本信息（头像、昵称）</li>
+        </ul>
+      </li>
+      <li>
+        <strong>学习统计</strong>
+        <ul>
+          <li>显示总学习时长</li>
+          <li>显示总练习题数和正确率</li>
+          <li>显示最近学习记录</li>
+        </ul>
+      </li>
     </ul>
 
     <div class="page-break"></div>
@@ -328,110 +350,120 @@
 
     <h4>2.1 题目管理模块</h4>
     <div class="highlight-box">
-        <strong>功能描述</strong>：老师可以上传、编辑和管理练习题目
+      <strong>功能描述</strong>：老师可以上传、编辑和管理练习题目
     </div>
 
     <p><strong>具体功能</strong>：</p>
     <ul>
-        <li><strong>题目上传</strong>
-            <ul>
-                <li>支持添加题目标题、内容</li>
-                <li>支持设置题目类型（单选、多选、填空、简答）</li>
-                <li>支持上传题目相关图片</li>
-                <li>支持设置正确答案和解析</li>
-                <li>支持设置题目分类和难度级别</li>
-            </ul>
-        </li>
-        <li><strong>题目列表管理</strong>
-            <ul>
-                <li>显示所有已上传题目列表</li>
-                <li>支持按分类、类型、时间等筛选</li>
-                <li>支持题目搜索功能</li>
-            </ul>
-        </li>
-        <li><strong>题目编辑和删除</strong>
-            <ul>
-                <li>支持修改题目内容和答案</li>
-                <li>支持删除不需要的题目</li>
-                <li>支持批量操作</li>
-            </ul>
-        </li>
+      <li>
+        <strong>题目上传</strong>
+        <ul>
+          <li>支持添加题目标题、内容</li>
+          <li>支持设置题目类型（单选、多选、填空、简答）</li>
+          <li>支持上传题目相关图片</li>
+          <li>支持设置正确答案和解析</li>
+          <li>支持设置题目分类和难度级别</li>
+        </ul>
+      </li>
+      <li>
+        <strong>题目列表管理</strong>
+        <ul>
+          <li>显示所有已上传题目列表</li>
+          <li>支持按分类、类型、时间等筛选</li>
+          <li>支持题目搜索功能</li>
+        </ul>
+      </li>
+      <li>
+        <strong>题目编辑和删除</strong>
+        <ul>
+          <li>支持修改题目内容和答案</li>
+          <li>支持删除不需要的题目</li>
+          <li>支持批量操作</li>
+        </ul>
+      </li>
     </ul>
 
     <h4>2.2 视频管理模块</h4>
     <div class="highlight-box">
-        <strong>功能描述</strong>：老师可以上传、管理录播课程视频
+      <strong>功能描述</strong>：老师可以上传、管理录播课程视频
     </div>
 
     <p><strong>具体功能</strong>：</p>
     <ul>
-        <li><strong>视频上传</strong>
-            <ul>
-                <li>支持上传MP4等常见视频格式</li>
-                <li>支持设置视频标题、描述</li>
-                <li>支持设置视频分类和章节</li>
-                <li>显示上传进度</li>
-            </ul>
-        </li>
-        <li><strong>视频列表管理</strong>
-            <ul>
-                <li>显示所有已上传视频列表</li>
-                <li>显示视频基本信息（标题、时长、大小、上传时间）</li>
-                <li>支持按分类、时间等筛选</li>
-                <li>支持视频搜索功能</li>
-            </ul>
-        </li>
-        <li><strong>视频编辑和删除</strong>
-            <ul>
-                <li>支持修改视频标题和描述</li>
-                <li>支持删除不需要的视频</li>
-                <li>支持视频预览</li>
-            </ul>
-        </li>
+      <li>
+        <strong>视频上传</strong>
+        <ul>
+          <li>支持上传MP4等常见视频格式</li>
+          <li>支持设置视频标题、描述</li>
+          <li>支持设置视频分类和章节</li>
+          <li>显示上传进度</li>
+        </ul>
+      </li>
+      <li>
+        <strong>视频列表管理</strong>
+        <ul>
+          <li>显示所有已上传视频列表</li>
+          <li>显示视频基本信息（标题、时长、大小、上传时间）</li>
+          <li>支持按分类、时间等筛选</li>
+          <li>支持视频搜索功能</li>
+        </ul>
+      </li>
+      <li>
+        <strong>视频编辑和删除</strong>
+        <ul>
+          <li>支持修改视频标题和描述</li>
+          <li>支持删除不需要的视频</li>
+          <li>支持视频预览</li>
+        </ul>
+      </li>
     </ul>
 
     <h4>2.3 数据统计模块</h4>
     <div class="highlight-box">
-        <strong>功能描述</strong>：查看学生学习数据和系统使用情况
+      <strong>功能描述</strong>：查看学生学习数据和系统使用情况
     </div>
 
     <p><strong>具体功能</strong>：</p>
     <ul>
-        <li><strong>学习数据统计</strong>
-            <ul>
-                <li>显示学生总数</li>
-                <li>显示题目总数和视频总数</li>
-                <li>显示学生练习情况统计</li>
-                <li>显示视频观看情况统计</li>
-            </ul>
-        </li>
-        <li><strong>资源管理统计</strong>
-            <ul>
-                <li>显示存储空间使用情况</li>
-                <li>显示最受欢迎的题目和视频</li>
-            </ul>
-        </li>
+      <li>
+        <strong>学习数据统计</strong>
+        <ul>
+          <li>显示学生总数</li>
+          <li>显示题目总数和视频总数</li>
+          <li>显示学生练习情况统计</li>
+          <li>显示视频观看情况统计</li>
+        </ul>
+      </li>
+      <li>
+        <strong>资源管理统计</strong>
+        <ul>
+          <li>显示存储空间使用情况</li>
+          <li>显示最受欢迎的题目和视频</li>
+        </ul>
+      </li>
     </ul>
 
     <h4>2.4 用户管理模块</h4>
     <div class="highlight-box">
-        <strong>功能描述</strong>：管理登录账户和基本设置
+      <strong>功能描述</strong>：管理登录账户和基本设置
     </div>
 
     <p><strong>具体功能</strong>：</p>
     <ul>
-        <li><strong>账户登录</strong>
-            <ul>
-                <li>老师账户登录验证</li>
-                <li>登录状态保持</li>
-            </ul>
-        </li>
-        <li><strong>个人设置</strong>
-            <ul>
-                <li>修改登录密码</li>
-                <li>个人信息管理</li>
-            </ul>
-        </li>
+      <li>
+        <strong>账户登录</strong>
+        <ul>
+          <li>老师账户登录验证</li>
+          <li>登录状态保持</li>
+        </ul>
+      </li>
+      <li>
+        <strong>个人设置</strong>
+        <ul>
+          <li>修改登录密码</li>
+          <li>个人信息管理</li>
+        </ul>
+      </li>
     </ul>
 
     <div class="page-break"></div>
@@ -440,16 +472,22 @@
 
     <h3>学生用户</h3>
     <ul>
-        <li><strong>角色描述</strong>：使用微信小程序进行学习和练习的用户</li>
-        <li><strong>主要需求</strong>：浏览题目、练习答题、观看视频、查看学习记录</li>
-        <li><strong>使用场景</strong>：随时随地使用手机进行学习</li>
+      <li><strong>角色描述</strong>：使用微信小程序进行学习和练习的用户</li>
+      <li>
+        <strong>主要需求</strong>：浏览题目、练习答题、观看视频、查看学习记录
+      </li>
+      <li><strong>使用场景</strong>：随时随地使用手机进行学习</li>
     </ul>
 
     <h3>老师用户</h3>
     <ul>
-        <li><strong>角色描述</strong>：使用PC后台管理系统上传和管理教学资源的用户</li>
-        <li><strong>主要需求</strong>：上传题目、上传视频、管理资源、查看学生数据</li>
-        <li><strong>使用场景</strong>：在办公室或家中使用电脑进行资源管理</li>
+      <li>
+        <strong>角色描述</strong>：使用PC后台管理系统上传和管理教学资源的用户
+      </li>
+      <li>
+        <strong>主要需求</strong>：上传题目、上传视频、管理资源、查看学生数据
+      </li>
+      <li><strong>使用场景</strong>：在办公室或家中使用电脑进行资源管理</li>
     </ul>
 
     <h2 id="page-structure">页面结构</h2>
@@ -492,86 +530,86 @@
 
     <h3>题目数据结构</h3>
     <ul>
-        <li>题目ID</li>
-        <li>题目标题</li>
-        <li>题目内容</li>
-        <li>题目类型（单选、多选、填空等）</li>
-        <li>选项内容（选择题）</li>
-        <li>正确答案</li>
-        <li>题目解析</li>
-        <li>题目分类</li>
-        <li>难度级别</li>
-        <li>创建时间</li>
-        <li>相关图片</li>
+      <li>题目ID</li>
+      <li>题目标题</li>
+      <li>题目内容</li>
+      <li>题目类型（单选、多选、填空等）</li>
+      <li>选项内容（选择题）</li>
+      <li>正确答案</li>
+      <li>题目解析</li>
+      <li>题目分类</li>
+      <li>难度级别</li>
+      <li>创建时间</li>
+      <li>相关图片</li>
     </ul>
 
     <h3>视频数据结构</h3>
     <ul>
-        <li>视频ID</li>
-        <li>视频标题</li>
-        <li>视频描述</li>
-        <li>视频文件地址</li>
-        <li>视频时长</li>
-        <li>视频分类</li>
-        <li>上传时间</li>
-        <li>文件大小</li>
-        <li>缩略图</li>
+      <li>视频ID</li>
+      <li>视频标题</li>
+      <li>视频描述</li>
+      <li>视频文件地址</li>
+      <li>视频时长</li>
+      <li>视频分类</li>
+      <li>上传时间</li>
+      <li>文件大小</li>
+      <li>缩略图</li>
     </ul>
 
     <h3>学习记录数据结构</h3>
     <ul>
-        <li>记录ID</li>
-        <li>用户ID</li>
-        <li>内容ID（题目ID或视频ID）</li>
-        <li>内容类型（题目或视频）</li>
-        <li>学习时间</li>
-        <li>学习进度</li>
-        <li>答题结果（针对题目）</li>
+      <li>记录ID</li>
+      <li>用户ID</li>
+      <li>内容ID（题目ID或视频ID）</li>
+      <li>内容类型（题目或视频）</li>
+      <li>学习时间</li>
+      <li>学习进度</li>
+      <li>答题结果（针对题目）</li>
     </ul>
 
     <h2 id="non-functional-requirements">非功能性需求</h2>
 
     <h3>性能要求</h3>
     <ul>
-        <li>页面加载时间不超过3秒</li>
-        <li>视频播放流畅，支持网络自适应</li>
-        <li>支持并发用户数：100+</li>
+      <li>页面加载时间不超过3秒</li>
+      <li>视频播放流畅，支持网络自适应</li>
+      <li>支持并发用户数：100+</li>
     </ul>
 
     <h3>兼容性要求</h3>
     <ul>
-        <li>微信小程序：支持微信最新版本</li>
-        <li>PC后台：支持主流浏览器（Chrome、Firefox、Safari、Edge）</li>
+      <li>微信小程序：支持微信最新版本</li>
+      <li>PC后台：支持主流浏览器（Chrome、Firefox、Safari、Edge）</li>
     </ul>
 
     <h3>安全性要求</h3>
     <ul>
-        <li>用户数据加密存储</li>
-        <li>后台管理系统登录验证</li>
-        <li>文件上传安全检查</li>
+      <li>用户数据加密存储</li>
+      <li>后台管理系统登录验证</li>
+      <li>文件上传安全检查</li>
     </ul>
 
     <h3>易用性要求</h3>
     <ul>
-        <li>界面简洁直观</li>
-        <li>操作流程简单易懂</li>
-        <li>支持常见的交互手势和操作习惯</li>
+      <li>界面简洁直观</li>
+      <li>操作流程简单易懂</li>
+      <li>支持常见的交互手势和操作习惯</li>
     </ul>
 
     <h2 id="constraints">约束条件</h2>
 
     <h3>技术约束</h3>
     <ul>
-        <li>微信小程序平台限制</li>
-        <li>视频文件大小和格式限制</li>
-        <li>存储空间限制</li>
+      <li>微信小程序平台限制</li>
+      <li>视频文件大小和格式限制</li>
+      <li>存储空间限制</li>
     </ul>
 
     <h3>业务约束</h3>
     <ul>
-        <li>初版功能保持简洁，避免复杂功能</li>
-        <li>专注核心学习场景</li>
-        <li>成本控制在合理范围内</li>
+      <li>初版功能保持简洁，避免复杂功能</li>
+      <li>专注核心学习场景</li>
+      <li>成本控制在合理范围内</li>
     </ul>
 
     <div class="page-break"></div>
@@ -580,44 +618,43 @@
 
     <h3>微信小程序端</h3>
     <ul class="checkbox-list">
-        <li>能够正常浏览题目列表和视频列表</li>
-        <li>能够完成题目练习并查看正确答案</li>
-        <li>能够流畅播放视频</li>
-        <li>能够查看个人学习记录和统计</li>
+      <li>能够正常浏览题目列表和视频列表</li>
+      <li>能够完成题目练习并查看正确答案</li>
+      <li>能够流畅播放视频</li>
+      <li>能够查看个人学习记录和统计</li>
     </ul>
 
     <h3>PC后台管理端</h3>
     <ul class="checkbox-list">
-        <li>能够成功登录管理系统</li>
-        <li>能够上传题目并设置相关信息</li>
-        <li>能够上传视频文件</li>
-        <li>能够管理和编辑已上传的内容</li>
-        <li>能够查看基本的数据统计</li>
+      <li>能够成功登录管理系统</li>
+      <li>能够上传题目并设置相关信息</li>
+      <li>能够上传视频文件</li>
+      <li>能够管理和编辑已上传的内容</li>
+      <li>能够查看基本的数据统计</li>
     </ul>
 
     <h2 id="future-plans">后续扩展规划</h2>
 
     <h3>短期扩展（v2.0）</h3>
     <ul>
-        <li>增加题目分组和专题练习</li>
-        <li>增加学习计划功能</li>
-        <li>增加错题本功能</li>
+      <li>增加题目分组和专题练习</li>
+      <li>增加学习计划功能</li>
+      <li>增加错题本功能</li>
     </ul>
 
     <h3>长期扩展（v3.0+）</h3>
     <ul>
-        <li>增加在线考试功能</li>
-        <li>增加学习社区交流</li>
-        <li>增加AI智能推荐</li>
-        <li>增加多老师协作管理</li>
+      <li>增加在线考试功能</li>
+      <li>增加学习社区交流</li>
+      <li>增加AI智能推荐</li>
+      <li>增加多老师协作管理</li>
     </ul>
 
     <div class="footer">
-        <hr>
-        <p><strong>文档版本</strong>：v1.0</p>
-        <p><strong>创建日期</strong>：2025年9月28日</p>
-        <p><strong>最后更新</strong>：2025年9月28日</p>
+      <hr />
+      <p><strong>文档版本</strong>：v1.0</p>
+      <p><strong>创建日期</strong>：2025年9月28日</p>
+      <p><strong>最后更新</strong>：2025年9月28日</p>
     </div>
-
-</body>
+  </body>
 </html>
