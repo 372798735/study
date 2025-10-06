@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TabBar 图标生成器</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 32px;
+      }
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 40px;
+      }
+      .instructions {
+        background: #f0f4ff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border-left: 4px solid #409eff;
+      }
+      .instructions h3 {
+        color: #409eff;
+        margin-bottom: 10px;
+      }
+      .instructions ol {
+        margin-left: 20px;
+        color: #666;
+        line-height: 1.8;
+      }
+      .icon-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+      .icon-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s;
+      }
+      .icon-card:hover {
+        border-color: #409eff;
+        box-shadow: 0 5px 15px rgba(64, 158, 255, 0.2);
+        transform: translateY(-5px);
+      }
+      .icon-title {
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+        font-size: 18px;
+      }
+      .icon-preview {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+      .icon-wrapper {
+        text-align: center;
+      }
+      .icon-label {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 5px;
+      }
+      canvas {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        display: block;
+        margin: 5px auto;
+      }
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+      button {
+        flex: 1;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+      }
+      .btn-primary {
+        background: #409eff;
+        color: white;
+      }
+      .btn-primary:hover {
+        background: #337ecc;
+        transform: scale(1.05);
+      }
+      .btn-success {
+        background: #67c23a;
+        color: white;
+      }
+      .btn-success:hover {
+        background: #529b2e;
+        transform: scale(1.05);
+      }
+      .download-all {
+        text-align: center;
+        margin-top: 30px;
+      }
+      .download-all button {
+        padding: 15px 40px;
+        font-size: 18px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: bold;
+      }
+      .download-all button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      .tip {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 20px;
+        color: #856404;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🎨 TabBar 图标生成器</h1>
+      <p class="subtitle">为你的微信小程序快速生成底部导航图标</p>
+
+      <div class="instructions">
+        <h3>📋 使用说明</h3>
+        <ol>
+          <li>点击下方每个图标的"下载"按钮，分别下载未选中和选中状态的图标</li>
+          <li>或者点击"一键下载全部"按钮（需要允许浏览器下载多个文件）</li>
+          <li>
+            将下载的 8 个图标文件放入
+            <code>miniprogram/images/tabbar/</code> 文件夹
+          </li>
+          <li>重启微信开发者工具，即可看到图标效果</li>
+        </ol>
+      </div>
+
+      <div class="icon-grid" id="iconGrid"></div>
+
+      <div class="download-all">
+        <button onclick="downloadAll()">⬇️ 一键下载全部图标</button>
+      </div>
+
+      <div class="tip">
+        💡
+        <strong>提示：</strong
+        >这些是简化版图标，适合快速测试。如需更精美的图标，建议使用 iconfont.cn
+        或 icons8.com 下载专业图标。
+      </div>
+    </div>
+
+    <script>
+      const icons = [
+        { name: "home", title: "首页", symbol: "🏠", text: "HOME" },
+        { name: "question", title: "题目", symbol: "📝", text: "QUIZ" },
+        { name: "video", title: "视频", symbol: "▶️", text: "VIDEO" },
+        { name: "profile", title: "我的", symbol: "👤", text: "ME" },
+      ];
+
+      const colors = {
+        normal: "#7A7E83",
+        active: "#409EFF",
+      };
+
+      function createIcon(text, emoji, color, size = 81) {
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+
+        // 绘制背景（可选）
+        // ctx.fillStyle = '#ffffff';
+        // ctx.fillRect(0, 0, size, size);
+
+        // 绘制图标（使用 emoji）
+        ctx.font = `${size * 0.5}px Arial`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = color;
+        ctx.fillText(emoji, size / 2, size / 2);
+
+        return canvas;
+      }
+
+      function downloadCanvas(canvas, filename) {
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      function createIconCard(icon) {
+        const card = document.createElement("div");
+        card.className = "icon-card";
+
+        const title = document.createElement("div");
+        title.className = "icon-title";
+        title.textContent = icon.title;
+        card.appendChild(title);
+
+        const preview = document.createElement("div");
+        preview.className = "icon-preview";
+
+        // 未选中状态
+        const normalWrapper = document.createElement("div");
+        normalWrapper.className = "icon-wrapper";
+        const normalLabel = document.createElement("div");
+        normalLabel.className = "icon-label";
+        normalLabel.textContent = "未选中";
+        normalWrapper.appendChild(normalLabel);
+        const normalCanvas = createIcon(icon.text, icon.symbol, colors.normal);
+        normalCanvas.id = `${icon.name}-normal`;
+        normalWrapper.appendChild(normalCanvas);
+        preview.appendChild(normalWrapper);
+
+        // 选中状态
+        const activeWrapper = document.createElement("div");
+        activeWrapper.className = "icon-wrapper";
+        const activeLabel = document.createElement("div");
+        activeLabel.className = "icon-label";
+        activeLabel.textContent = "选中";
+        activeWrapper.appendChild(activeLabel);
+        const activeCanvas = createIcon(icon.text, icon.symbol, colors.active);
+        activeCanvas.id = `${icon.name}-active`;
+        activeWrapper.appendChild(activeCanvas);
+        preview.appendChild(activeWrapper);
+
+        card.appendChild(preview);
+
+        // 按钮组
+        const btnGroup = document.createElement("div");
+        btnGroup.className = "btn-group";
+
+        const btnNormal = document.createElement("button");
+        btnNormal.className = "btn-primary";
+        btnNormal.textContent = "下载未选中";
+        btnNormal.onclick = () =>
+          downloadCanvas(normalCanvas, `${icon.name}.png`);
+        btnGroup.appendChild(btnNormal);
+
+        const btnActive = document.createElement("button");
+        btnActive.className = "btn-success";
+        btnActive.textContent = "下载选中";
+        btnActive.onclick = () =>
+          downloadCanvas(activeCanvas, `${icon.name}-active.png`);
+        btnGroup.appendChild(btnActive);
+
+        card.appendChild(btnGroup);
+
+        return card;
+      }
+
+      function downloadAll() {
+        icons.forEach((icon, index) => {
+          setTimeout(() => {
+            const normalCanvas = document.getElementById(`${icon.name}-normal`);
+            const activeCanvas = document.getElementById(`${icon.name}-active`);
+            downloadCanvas(normalCanvas, `${icon.name}.png`);
+            setTimeout(() => {
+              downloadCanvas(activeCanvas, `${icon.name}-active.png`);
+            }, 100);
+          }, index * 200);
+        });
+      }
+
+      // 初始化
+      const grid = document.getElementById("iconGrid");
+      icons.forEach((icon) => {
+        grid.appendChild(createIconCard(icon));
+      });
+    </script>
+  </body>
+</html>

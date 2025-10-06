@@ -1,0 +1,123 @@
+<!--pages/questions/detail/detail.wxml-->
+<wxs module="utils">
+  // 获取选项标签（A、B、C、D...）
+  var getOptionLabel = function(index) {
+    var labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+    return labels[index] || '';
+  };
+
+  // 检查数组是否包含某个元素
+  var includes = function(arr, item) {
+    for (var i = 0; i < arr.length; i++) {
+      if (arr[i] === item) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  module.exports = {
+    getOptionLabel: getOptionLabel,
+    includes: includes
+  };
+</wxs>
+
+<view class="container">
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:else class="detail-content">
+    <!-- 题目信息 -->
+    <view class="question-card card">
+      <view class="question-header">
+        <text class="question-title">{{question.title}}</text>
+        <view class="tags">
+          <view class="tag tag-{{question.difficulty === 'easy' ? 'success' : question.difficulty === 'medium' ? 'warning' : 'danger'}}">
+            {{question.difficulty === 'easy' ? '简单' : question.difficulty === 'medium' ? '中等' : '困难'}}
+          </view>
+          <view class="tag tag-primary">{{question.category}}</view>
+        </view>
+      </view>
+
+      <view class="question-type">
+        <text>{{question.type === 'single' ? '📝 单选题' : question.type === 'multiple' ? '✅ 多选题' : '❓ 判断题'}}</text>
+      </view>
+
+      <view class="question-content">
+        <text>{{question.content}}</text>
+      </view>
+
+      <!-- 选项列表 -->
+      <view class="options-list" wx:if="{{question.options && question.options.length > 0}}">
+        <view 
+          class="option-item {{utils.includes(selectedAnswers, utils.getOptionLabel(index)) ? 'selected' : ''}} {{submitted && utils.includes(correctAnswer, utils.getOptionLabel(index)) ? 'correct' : ''}} {{submitted && utils.includes(selectedAnswers, utils.getOptionLabel(index)) && !utils.includes(correctAnswer, utils.getOptionLabel(index)) ? 'wrong' : ''}}"
+          wx:for="{{question.options}}"
+          wx:key="*this"
+          bindtap="selectOption"
+          data-option="{{item}}"
+          data-index="{{index}}"
+        >
+          <view class="option-label">{{utils.getOptionLabel(index)}}</view>
+          <view class="option-content">{{item}}</view>
+          <view class="option-icon" wx:if="{{submitted}}">
+            <text wx:if="{{utils.includes(correctAnswer, utils.getOptionLabel(index))}}">✓</text>
+            <text wx:elif="{{utils.includes(selectedAnswers, utils.getOptionLabel(index))}}">✗</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提交按钮 -->
+      <view class="submit-btn" wx:if="{{!submitted}}">
+        <button class="btn btn-primary" bindtap="submitAnswer" disabled="{{selectedAnswers.length === 0}}">
+          提交答案
+        </button>
+      </view>
+
+      <!-- 答案解析 -->
+      <view class="answer-section" wx:if="{{submitted}}">
+        <view class="answer-result {{isCorrect ? 'correct' : 'wrong'}}">
+          <text class="result-icon">{{isCorrect ? '✓' : '✗'}}</text>
+          <text class="result-text">{{isCorrect ? '回答正确！' : '回答错误'}}</text>
+        </view>
+
+        <view class="correct-answer">
+          <text class="label">正确答案：</text>
+          <text class="value">{{question.answer}}</text>
+        </view>
+
+        <view class="explanation" wx:if="{{question.explanation}}">
+          <text class="label">答案解析：</text>
+          <text class="content">{{question.explanation}}</text>
+        </view>
+
+        <!-- 视频讲解 -->
+        <view class="video-section" wx:if="{{question.videoUrl}}">
+          <text class="label">视频讲解：</text>
+          <video 
+            id="questionVideo"
+            class="video-player" 
+            src="{{question.videoUrl}}" 
+            poster="{{question.imageUrl || ''}}"
+            controls
+            show-center-play-btn="{{true}}"
+            show-fullscreen-btn="{{true}}"
+            show-play-btn="{{true}}"
+            enable-play-gesture="{{true}}"
+            object-fit="contain"
+            direction="0"
+            binderror="onVideoError"
+            bindplay="onVideoPlay"
+            bindpause="onVideoPause"
+          ></video>
+        </view>
+
+        <!-- 重新答题 -->
+        <view class="retry-btn">
+          <button class="btn btn-primary" bindtap="retryQuestion">再做一次</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+

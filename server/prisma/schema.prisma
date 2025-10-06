@@ -78,9 +78,9 @@ model LearningRecord {
   createdAt   DateTime  @default(now()) @map("created_at")
   
   // 关联关系
-  user     User      @relation(fields: [userId], references: [id])
-  question Question? @relation(fields: [contentId], references: [id], map: "learning_records_question_id_fkey")
-  video    Video?    @relation(fields: [contentId], references: [id], map: "learning_records_video_id_fkey")
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question Question? @relation(fields: [contentId], references: [id], map: "learning_records_question_id_fkey", onDelete: NoAction, onUpdate: NoAction)
+  video    Video?    @relation(fields: [contentId], references: [id], map: "learning_records_video_id_fkey", onDelete: NoAction, onUpdate: NoAction)
   
   @@unique([userId, contentId, contentType])
   @@map("learning_records")

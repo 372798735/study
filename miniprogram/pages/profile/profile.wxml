@@ -1,0 +1,9 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <view class="page-title">个人中心</view>
+  <view class="empty">
+    <view class="empty-icon">👤</view>
+    <view class="empty-text">功能开发中...</view>
+  </view>
+</view>
+

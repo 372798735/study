@@ -14,7 +14,14 @@
         </el-form-item>
 
         <el-form-item label="视频分类" prop="category">
-          <el-input v-model="form.category" placeholder="请输入分类" />
+          <el-select v-model="form.category" placeholder="请选择分类" clearable>
+            <el-option
+              v-for="category in categories"
+              :key="category"
+              :label="category"
+              :value="category"
+            />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="视频描述" prop="description">
@@ -45,13 +52,25 @@
 import { ref, reactive, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { ElMessage, type FormInstance, type FormRules } from "element-plus";
-import { getVideoById, updateVideo } from "@/api/videos";
+import { getVideo, updateVideo } from "@/api/videos";
 
 const router = useRouter();
 const route = useRoute();
 const formRef = ref<FormInstance>();
 const loading = ref(false);
 const pageLoading = ref(false);
+
+// 分类选项（与题目管理页面保持一致）
+const categories = ref([
+  "数学",
+  "语文",
+  "英语",
+  "物理",
+  "化学",
+  "生物",
+  "历史",
+  "地理",
+]);
 
 const form = reactive({
   title: "",
@@ -62,15 +81,15 @@ const form = reactive({
 
 const rules: FormRules = {
   title: [{ required: true, message: "请输入视频标题", trigger: "blur" }],
-  category: [{ required: true, message: "请输入分类", trigger: "blur" }],
+  category: [{ required: true, message: "请选择分类", trigger: "change" }],
 };
 
 const loadVideo = async () => {
   const id = route.params.id as string;
   pageLoading.value = true;
   try {
-    const data = await getVideoById(Number(id));
-    Object.assign(form, data);
+    const response = await getVideo(Number(id));
+    Object.assign(form, response.data);
   } catch (error) {
     ElMessage.error("加载失败");
     goBack();
@@ -114,6 +133,20 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  // 表单样式
+  .el-form {
+    max-width: 600px;
+
+    .el-input,
+    .el-select {
+      width: 100%;
+    }
+
+    .el-textarea {
+      width: 100%;
+    }
   }
 }
 </style>

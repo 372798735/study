@@ -1,0 +1,9 @@
+<!--pages/videos/list/list.wxml-->
+<view class="container">
+  <view class="page-title">视频列表</view>
+  <view class="empty">
+    <view class="empty-icon">🎬</view>
+    <view class="empty-text">功能开发中...</view>
+  </view>
+</view>
+

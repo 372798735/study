@@ -4,6 +4,11 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 import { TransformInterceptor } from "./common/interceptors/transform.interceptor";
 
+// 解决 BigInt 序列化问题
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -38,6 +43,10 @@ async function bootstrap() {
 
   // 全局前缀
   app.setGlobalPrefix("api/v1");
+
+  // 静态文件服务 - 提供上传文件的访问
+  const express = require("express");
+  app.use("/uploads", express.static("uploads"));
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

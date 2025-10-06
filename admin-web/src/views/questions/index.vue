@@ -212,11 +212,17 @@ const loadQuestions = async () => {
   try {
     loading.value = true;
 
+    // 只传递有值的参数
     const params: QuestionListParams = {
       page: pagination.page,
       limit: pagination.limit,
-      ...searchForm,
     };
+
+    // 只添加非空的搜索条件
+    if (searchForm.keyword) params.keyword = searchForm.keyword;
+    if (searchForm.category) params.category = searchForm.category;
+    if (searchForm.type) params.type = searchForm.type;
+    if (searchForm.difficulty) params.difficulty = searchForm.difficulty;
 
     const response = await getQuestions(params);
     questionList.value = response.data.list;
@@ -373,6 +379,17 @@ onMounted(() => {
 .questions-page {
   .search-card {
     margin-bottom: 20px;
+
+    // 搜索表单样式
+    .el-form {
+      .el-input {
+        width: 220px;
+      }
+
+      .el-select {
+        width: 160px;
+      }
+    }
   }
 
   .action-card {

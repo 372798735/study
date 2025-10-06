@@ -1,0 +1,7 @@
+/* pages/videos/list/list.wxss */
+.page-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  text-align: center;
+  padding: 40rpx 0;
+}

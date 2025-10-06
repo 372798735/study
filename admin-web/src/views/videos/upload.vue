@@ -14,10 +14,14 @@
         </el-form-item>
 
         <el-form-item label="视频分类" prop="category">
-          <el-input
-            v-model="form.category"
-            placeholder="请输入分类，如：JavaScript基础"
-          />
+          <el-select v-model="form.category" placeholder="请选择分类" clearable>
+            <el-option
+              v-for="category in categories"
+              :key="category"
+              :label="category"
+              :value="category"
+            />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="视频描述" prop="description">
@@ -101,6 +105,18 @@ const router = useRouter();
 const formRef = ref<FormInstance>();
 const loading = ref(false);
 
+// 分类选项（与题目管理页面保持一致）
+const categories = ref([
+  "数学",
+  "语文",
+  "英语",
+  "物理",
+  "化学",
+  "生物",
+  "历史",
+  "地理",
+]);
+
 const uploadUrl = computed(() => `${import.meta.env.VITE_API_BASE_URL}/upload`);
 const uploadHeaders = computed(() => ({
   Authorization: `Bearer ${getToken()}`,
@@ -108,7 +124,7 @@ const uploadHeaders = computed(() => ({
 
 const form = reactive({
   title: "",
-  category: "",
+  category: "数学",
   description: "",
   videoUrl: "",
   coverUrl: "",
@@ -117,7 +133,7 @@ const form = reactive({
 
 const rules: FormRules = {
   title: [{ required: true, message: "请输入视频标题", trigger: "blur" }],
-  category: [{ required: true, message: "请输入分类", trigger: "blur" }],
+  category: [{ required: true, message: "请选择分类", trigger: "change" }],
   videoUrl: [{ required: true, message: "请上传视频文件", trigger: "change" }],
 };
 
@@ -199,6 +215,20 @@ const goBack = () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  // 表单样式
+  .el-form {
+    max-width: 600px;
+
+    .el-input,
+    .el-select {
+      width: 100%;
+    }
+
+    .el-textarea {
+      width: 100%;
+    }
   }
 
   .avatar-uploader {

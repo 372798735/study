@@ -1,0 +1,44 @@
+<!--pages/videos/player/player.wxml-->
+<view class="container">
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:else class="player-content">
+    <!-- 视频播放器 -->
+    <view class="video-container">
+      <video 
+        id="mainVideo"
+        class="video-player" 
+        src="{{video.url}}" 
+        poster="{{video.coverUrl || ''}}"
+        title="{{video.title}}"
+        controls
+        show-center-play-btn="{{true}}"
+        show-fullscreen-btn="{{true}}"
+        show-play-btn="{{true}}"
+        enable-play-gesture="{{true}}"
+        object-fit="contain"
+        direction="0"
+        autoplay="{{false}}"
+        binderror="onVideoError"
+        bindplay="onVideoPlay"
+        bindpause="onVideoPause"
+        bindended="onVideoEnded"
+        bindtimeupdate="onTimeUpdate"
+      ></video>
+    </view>
+
+    <!-- 视频信息 -->
+    <view class="video-info card">
+      <view class="video-title">{{video.title}}</view>
+      <view class="video-meta">
+        <text class="category">{{video.category}}</text>
+        <text class="duration" wx:if="{{video.duration}}">时长: {{formatDuration(video.duration)}}</text>
+      </view>
+      <view class="video-description" wx:if="{{video.description}}">
+        <text>{{video.description}}</text>
+      </view>
+    </view>
+  </view>
+</view>

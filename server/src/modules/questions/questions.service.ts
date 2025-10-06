@@ -1,22 +1,38 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateQuestionDto } from './dto/create-question.dto';
-import { UpdateQuestionDto } from './dto/update-question.dto';
-import { AnswerQuestionDto } from './dto/answer-question.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+import { CreateQuestionDto } from "./dto/create-question.dto";
+import { UpdateQuestionDto } from "./dto/update-question.dto";
+import { AnswerQuestionDto } from "./dto/answer-question.dto";
 
 @Injectable()
 export class QuestionsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(page: number, limit: number, category?: string, keyword?: string) {
+  async findAll(
+    page: number,
+    limit: number,
+    category?: string,
+    type?: string,
+    difficulty?: string,
+    keyword?: string
+  ) {
     const skip = (page - 1) * limit;
     const where: any = {};
 
-    if (category) {
+    // 过滤掉字符串 "undefined" 和空字符串
+    if (category && category !== "undefined" && category.trim() !== "") {
       where.category = category;
     }
 
-    if (keyword) {
+    if (type && type !== "undefined" && type.trim() !== "") {
+      where.type = type;
+    }
+
+    if (difficulty && difficulty !== "undefined" && difficulty.trim() !== "") {
+      where.difficulty = difficulty;
+    }
+
+    if (keyword && keyword !== "undefined" && keyword.trim() !== "") {
       where.OR = [
         { title: { contains: keyword } },
         { content: { contains: keyword } },
@@ -28,7 +44,7 @@ export class QuestionsService {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           title: true,
@@ -60,7 +76,7 @@ export class QuestionsService {
     });
 
     if (!question) {
-      throw new NotFoundException('题目不存在');
+      throw new NotFoundException("题目不存在");
     }
 
     return question;
@@ -78,7 +94,7 @@ export class QuestionsService {
     });
 
     if (!question) {
-      throw new NotFoundException('题目不存在');
+      throw new NotFoundException("题目不存在");
     }
 
     return this.prisma.question.update({
@@ -93,26 +109,39 @@ export class QuestionsService {
     });
 
     if (!question) {
-      throw new NotFoundException('题目不存在');
+      throw new NotFoundException("题目不存在");
     }
 
+    // 先删除相关的学习记录，避免外键约束错误
+    await this.prisma.learningRecord.deleteMany({
+      where: {
+        contentId: id,
+        contentType: "question",
+      },
+    });
+
+    // 再删除题目
     return this.prisma.question.delete({
       where: { id },
     });
   }
 
-  async answer(id: number, answerQuestionDto: AnswerQuestionDto, userId: number) {
+  async answer(
+    id: number,
+    answerQuestionDto: AnswerQuestionDto,
+    userId: number
+  ) {
     const question = await this.prisma.question.findUnique({
       where: { id },
     });
 
     if (!question) {
-      throw new NotFoundException('题目不存在');
+      throw new NotFoundException("题目不存在");
     }
 
     // 判断答案是否正确
     const isCorrect = this.checkAnswer(question, answerQuestionDto.answer);
-    
+
     // 计算得分
     const score = isCorrect ? 100 : 0;
 
@@ -122,7 +151,7 @@ export class QuestionsService {
         userId_contentId_contentType: {
           userId,
           contentId: id,
-          contentType: 'question',
+          contentType: "question",
         },
       },
       update: {
@@ -132,7 +161,7 @@ export class QuestionsService {
       create: {
         userId,
         contentId: id,
-        contentType: 'question',
+        contentType: "question",
         progress: 100,
         score,
         completedAt: new Date(),
@@ -149,17 +178,26 @@ export class QuestionsService {
 
   private checkAnswer(question: any, userAnswer: string): boolean {
     switch (question.type) {
-      case 'single':
-      case 'fill':
-      case 'essay':
-        return question.answer.toLowerCase().trim() === userAnswer.toLowerCase().trim();
-      
-      case 'multiple':
-        const correctAnswers = question.answer.split(',').map(a => a.trim().toLowerCase());
-        const userAnswers = userAnswer.split(',').map(a => a.trim().toLowerCase());
-        return correctAnswers.length === userAnswers.length && 
-               correctAnswers.every(answer => userAnswers.includes(answer));
-      
+      case "single":
+      case "fill":
+      case "essay":
+        return (
+          question.answer.toLowerCase().trim() ===
+          userAnswer.toLowerCase().trim()
+        );
+
+      case "multiple":
+        const correctAnswers = question.answer
+          .split(",")
+          .map((a) => a.trim().toLowerCase());
+        const userAnswers = userAnswer
+          .split(",")
+          .map((a) => a.trim().toLowerCase());
+        return (
+          correctAnswers.length === userAnswers.length &&
+          correctAnswers.every((answer) => userAnswers.includes(answer))
+        );
+
       default:
         return false;
     }

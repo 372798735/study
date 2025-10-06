@@ -9,6 +9,10 @@
       </template>
 
       <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
+        <el-form-item label="题目标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入题目标题" />
+        </el-form-item>
+
         <el-form-item label="题目内容" prop="content">
           <el-input
             v-model="form.content"
@@ -35,7 +39,14 @@
         </el-form-item>
 
         <el-form-item label="分类" prop="category">
-          <el-input v-model="form.category" placeholder="请输入分类" />
+          <el-select v-model="form.category" placeholder="请选择分类" clearable>
+            <el-option
+              v-for="category in categories"
+              :key="category"
+              :label="category"
+              :value="category"
+            />
+          </el-select>
         </el-form-item>
 
         <el-form-item label="选项" prop="options">
@@ -62,8 +73,8 @@
           >
         </el-form-item>
 
-        <el-form-item label="正确答案" prop="correctAnswer">
-          <el-input v-model="form.correctAnswer" placeholder="请输入正确答案" />
+        <el-form-item label="正确答案" prop="answer">
+          <el-input v-model="form.answer" placeholder="请输入正确答案" />
         </el-form-item>
 
         <el-form-item label="答案解析" prop="explanation">
@@ -73,6 +84,50 @@
             :rows="3"
             placeholder="请输入答案解析"
           />
+        </el-form-item>
+
+        <el-form-item label="视频讲解">
+          <div v-if="!form.videoUrl">
+            <el-upload
+              class="upload-demo"
+              drag
+              :action="uploadUrl"
+              :headers="uploadHeaders"
+              :on-success="handleVideoSuccess"
+              :on-error="handleUploadError"
+              :before-upload="beforeVideoUpload"
+              accept="video/*"
+              :limit="1"
+              :auto-upload="true"
+            >
+              <el-icon class="el-icon--upload"><UploadFilled /></el-icon>
+              <div class="el-upload__text">
+                拖拽视频到此处或<em>点击上传</em>
+              </div>
+              <template #tip>
+                <div class="el-upload__tip">
+                  支持 mp4/avi/mov 格式，文件大小不超过 200MB
+                </div>
+              </template>
+            </el-upload>
+          </div>
+          <div v-else class="video-preview">
+            <video
+              :src="form.videoUrl"
+              controls
+              style="max-width: 100%; height: auto; border-radius: 4px"
+            >
+              您的浏览器不支持视频播放
+            </video>
+            <el-button
+              type="danger"
+              size="small"
+              @click="removeVideo"
+              style="margin-top: 10px"
+            >
+              删除视频
+            </el-button>
+          </div>
         </el-form-item>
 
         <el-form-item>
@@ -87,10 +142,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { ElMessage, type FormInstance, type FormRules } from "element-plus";
-import { getQuestionById, updateQuestion } from "@/api/questions";
+import {
+  ElMessage,
+  type FormInstance,
+  type FormRules,
+  type UploadProps,
+} from "element-plus";
+import { UploadFilled } from "@element-plus/icons-vue";
+import { getQuestion, updateQuestion } from "@/api/questions";
+import { getToken } from "@/utils/auth";
 
 const router = useRouter();
 const route = useRoute();
@@ -98,32 +160,52 @@ const formRef = ref<FormInstance>();
 const loading = ref(false);
 const pageLoading = ref(false);
 
+// 分类选项（与题目管理页面保持一致）
+const categories = ref([
+  "数学",
+  "语文",
+  "英语",
+  "物理",
+  "化学",
+  "生物",
+  "历史",
+  "地理",
+]);
+
+const uploadUrl = computed(
+  () => `${import.meta.env.VITE_API_BASE_URL || "/api/v1"}/upload/video`
+);
+const uploadHeaders = computed(() => ({
+  Authorization: `Bearer ${getToken()}`,
+}));
+
 const form = reactive({
+  title: "",
   content: "",
   type: "single",
   difficulty: "medium",
   category: "",
   options: ["", "", "", ""],
-  correctAnswer: "",
+  answer: "",
   explanation: "",
+  videoUrl: "",
 });
 
 const rules: FormRules = {
+  title: [{ required: true, message: "请输入题目标题", trigger: "blur" }],
   content: [{ required: true, message: "请输入题目内容", trigger: "blur" }],
   type: [{ required: true, message: "请选择题目类型", trigger: "change" }],
   difficulty: [{ required: true, message: "请选择难度", trigger: "change" }],
-  category: [{ required: true, message: "请输入分类", trigger: "blur" }],
-  correctAnswer: [
-    { required: true, message: "请输入正确答案", trigger: "blur" },
-  ],
+  category: [{ required: true, message: "请选择分类", trigger: "change" }],
+  answer: [{ required: true, message: "请输入正确答案", trigger: "blur" }],
 };
 
 const loadQuestion = async () => {
   const id = route.params.id as string;
   pageLoading.value = true;
   try {
-    const data = await getQuestionById(Number(id));
-    Object.assign(form, data);
+    const response = await getQuestion(Number(id));
+    Object.assign(form, response.data);
   } catch (error) {
     ElMessage.error("加载失败");
     goBack();
@@ -140,6 +222,38 @@ const removeOption = (index: number) => {
   if (form.options.length > 2) {
     form.options.splice(index, 1);
   }
+};
+
+const beforeVideoUpload: UploadProps["beforeUpload"] = (file) => {
+  const isVideo = file.type.startsWith("video/");
+  const isLt200M = file.size / 1024 / 1024 < 200;
+
+  if (!isVideo) {
+    ElMessage.error("只能上传视频文件!");
+    return false;
+  }
+  if (!isLt200M) {
+    ElMessage.error("视频大小不能超过 200MB!");
+    return false;
+  }
+  return true;
+};
+
+const handleVideoSuccess = (response: any) => {
+  if (response.code === 200) {
+    form.videoUrl = response.data.url;
+    ElMessage.success("视频上传成功");
+  } else {
+    ElMessage.error(response.message || "视频上传失败");
+  }
+};
+
+const handleUploadError = () => {
+  ElMessage.error("视频上传失败");
+};
+
+const removeVideo = () => {
+  form.videoUrl = "";
 };
 
 const submitForm = async () => {
@@ -177,6 +291,30 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  // 表单样式
+  .el-form {
+    max-width: 600px;
+
+    .el-input,
+    .el-select {
+      width: 100%;
+    }
+
+    .el-textarea {
+      width: 100%;
+    }
+  }
+
+  // 视频预览样式
+  .video-preview {
+    video {
+      max-width: 100%;
+      max-height: 400px;
+      border-radius: 4px;
+      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    }
   }
 }
 </style>

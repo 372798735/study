@@ -1,0 +1,73 @@
+<!--pages/questions/list/list.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索题目..." bindinput="onSearchInput" value="{{keyword}}" />
+    <view class="search-icon">🔍</view>
+  </view>
+
+  <!-- 筛选栏 -->
+  <view class="filter-bar">
+    <scroll-view class="filter-scroll" scroll-x>
+      <view class="filter-item {{category === '' ? 'active' : ''}}" bindtap="onCategoryChange" data-value="">
+        全部
+      </view>
+      <view class="filter-item {{category === item ? 'active' : ''}}" wx:for="{{categories}}" wx:key="*this" bindtap="onCategoryChange" data-value="{{item}}">
+        {{item}}
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="filter-bar">
+    <scroll-view class="filter-scroll" scroll-x>
+      <view class="filter-item {{difficulty === '' ? 'active' : ''}}" bindtap="onDifficultyChange" data-value="">
+        全部难度
+      </view>
+      <view class="filter-item {{difficulty === 'easy' ? 'active' : ''}}" bindtap="onDifficultyChange" data-value="easy">
+        简单
+      </view>
+      <view class="filter-item {{difficulty === 'medium' ? 'active' : ''}}" bindtap="onDifficultyChange" data-value="medium">
+        中等
+      </view>
+      <view class="filter-item {{difficulty === 'hard' ? 'active' : ''}}" bindtap="onDifficultyChange" data-value="hard">
+        困难
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 题目列表 -->
+  <view class="question-list">
+    <view class="question-item card" wx:for="{{questions}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
+      <view class="question-header">
+        <text class="question-title">{{item.title}}</text>
+        <view class="tag tag-{{item.difficulty === 'easy' ? 'success' : item.difficulty === 'medium' ? 'warning' : 'danger'}}">
+          {{item.difficulty === 'easy' ? '简单' : item.difficulty === 'medium' ? '中等' : '困难'}}
+        </view>
+      </view>
+      <text class="question-content">{{item.content}}</text>
+      <view class="question-footer">
+        <text class="category-tag">📚 {{item.category}}</text>
+        <text class="type-tag">
+          {{item.type === 'single' ? '📝 单选题' : item.type === 'multiple' ? '✅ 多选题' : '❓ 判断题'}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore && !loading}}">
+      <text bindtap="loadMore">加载更多</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty" wx:if="{{!loading && questions.length === 0}}">
+      <view class="empty-icon">📝</view>
+      <view class="empty-text">暂无题目</view>
+    </view>
+  </view>
+</view>
+

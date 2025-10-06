@@ -15,7 +15,7 @@
         class="sidebar-menu"
       >
         <el-menu-item index="/dashboard">
-          <el-icon><Dashboard /></el-icon>
+          <el-icon><DataBoard /></el-icon>
           <span>仪表板</span>
         </el-menu-item>
 
@@ -92,10 +92,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue";
+import { ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { ElMessage, ElMessageBox } from "element-plus";
+import {
+  DataBoard,
+  Document,
+  VideoPlay,
+  DataAnalysis,
+  Setting,
+  Fold,
+  Expand,
+  User,
+  ArrowDown,
+} from "@element-plus/icons-vue";
 
 const route = useRoute();
 const router = useRouter();

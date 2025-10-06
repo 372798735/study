@@ -1,0 +1,35 @@
+### 测试题目列表接口
+
+# 1. 查询所有题目（无参数）
+GET http://localhost:3000/api/v1/questions
+
+###
+
+# 2. 查询所有题目（带分页参数）
+GET http://localhost:3000/api/v1/questions?page=1&limit=10
+
+###
+
+# 3. 按分类查询
+GET http://localhost:3000/api/v1/questions?category=数学
+
+###
+
+# 4. 按难度查询
+GET http://localhost:3000/api/v1/questions?difficulty=easy
+
+###
+
+# 5. 组合查询
+GET http://localhost:3000/api/v1/questions?page=1&limit=10&category=数学&difficulty=easy
+
+###
+
+# 6. 关键词搜索
+GET http://localhost:3000/api/v1/questions?keyword=算
+
+###
+
+# 7. 查询单个题目
+GET http://localhost:3000/api/v1/questions/5
+

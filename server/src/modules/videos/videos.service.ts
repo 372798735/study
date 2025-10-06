@@ -1,14 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateVideoDto } from './dto/create-video.dto';
-import { UpdateVideoDto } from './dto/update-video.dto';
-import { UpdateProgressDto } from './dto/update-progress.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+import { CreateVideoDto } from "./dto/create-video.dto";
+import { UpdateVideoDto } from "./dto/update-video.dto";
+import { UpdateProgressDto } from "./dto/update-progress.dto";
 
 @Injectable()
 export class VideosService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(page: number, limit: number, category?: string, keyword?: string) {
+  async findAll(
+    page: number,
+    limit: number,
+    category?: string,
+    keyword?: string
+  ) {
     const skip = (page - 1) * limit;
     const where: any = {};
 
@@ -28,7 +33,7 @@ export class VideosService {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         select: {
           id: true,
           title: true,
@@ -59,7 +64,7 @@ export class VideosService {
     });
 
     if (!video) {
-      throw new NotFoundException('视频不存在');
+      throw new NotFoundException("视频不存在");
     }
 
     return video;
@@ -77,7 +82,7 @@ export class VideosService {
     });
 
     if (!video) {
-      throw new NotFoundException('视频不存在');
+      throw new NotFoundException("视频不存在");
     }
 
     return this.prisma.video.update({
@@ -92,21 +97,34 @@ export class VideosService {
     });
 
     if (!video) {
-      throw new NotFoundException('视频不存在');
+      throw new NotFoundException("视频不存在");
     }
 
+    // 先删除相关的学习记录，避免外键约束错误
+    await this.prisma.learningRecord.deleteMany({
+      where: {
+        contentId: id,
+        contentType: "video",
+      },
+    });
+
+    // 再删除视频
     return this.prisma.video.delete({
       where: { id },
     });
   }
 
-  async updateProgress(id: number, updateProgressDto: UpdateProgressDto, userId: number) {
+  async updateProgress(
+    id: number,
+    updateProgressDto: UpdateProgressDto,
+    userId: number
+  ) {
     const video = await this.prisma.video.findUnique({
       where: { id },
     });
 
     if (!video) {
-      throw new NotFoundException('视频不存在');
+      throw new NotFoundException("视频不存在");
     }
 
     const { progress, completed = false } = updateProgressDto;
@@ -117,7 +135,7 @@ export class VideosService {
         userId_contentId_contentType: {
           userId,
           contentId: id,
-          contentType: 'video',
+          contentType: "video",
         },
       },
       update: {
@@ -127,14 +145,14 @@ export class VideosService {
       create: {
         userId,
         contentId: id,
-        contentType: 'video',
+        contentType: "video",
         progress,
         completedAt: completed ? new Date() : null,
       },
     });
 
     return {
-      message: '进度更新成功',
+      message: "进度更新成功",
       progress,
       completed,
     };
