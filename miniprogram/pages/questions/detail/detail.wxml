@@ -28,6 +28,11 @@
   </view>
 
   <view wx:else class="detail-content">
+    <!-- 收藏按钮 -->
+    <view class="favorite-btn" bindtap="toggleFavorite">
+      <text class="favorite-icon {{isFavorite ? 'favorited' : ''}}">{{isFavorite ? '❤️' : '🤍'}}</text>
+    </view>
+
     <!-- 题目信息 -->
     <view class="question-card card">
       <view class="question-header">

@@ -12,11 +12,11 @@
         <text class="banner-title">海量题库 随时练习</text>
       </view>
     </swiper-item>
-    <!-- <swiper-item>
+    <swiper-item>
       <view class="banner-item banner-3">
         <text class="banner-title">精品视频 轻松学习</text>
       </view>
-    </swiper-item> -->
+    </swiper-item>
   </swiper>
 
   <!-- 统计卡片 -->

@@ -1,9 +1,93 @@
 <!--pages/profile/profile.wxml-->
 <view class="container">
-  <view class="page-title">个人中心</view>
-  <view class="empty">
-    <view class="empty-icon">👤</view>
-    <view class="empty-text">功能开发中...</view>
+  <!-- 用户信息区域 -->
+  <view class="user-info-section">
+    <view class="user-header">
+      <!-- 头像 -->
+      <button 
+        class="avatar-wrapper" 
+        open-type="chooseAvatar" 
+        bind:chooseavatar="onChooseAvatar"
+        catchtap="stopPropagation"
+      >
+        <image 
+          class="user-avatar" 
+          src="{{userInfo.avatarUrl || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}" 
+          mode="aspectFill"
+        ></image>
+        <view class="avatar-hint">点击选择头像</view>
+      </button>
+      
+      <!-- 用户信息 -->
+      <view class="user-details" bindtap="onUserInfoTap">
+        <view class="user-name-wrapper">
+          <input 
+            wx:if="{{userInfo.isLogin}}"
+            class="user-name-input"
+            type="nickname" 
+            placeholder="点击输入昵称"
+            value="{{userInfo.nickName}}"
+            bindblur="onNicknameInput"
+            catchtap="stopPropagation"
+          />
+          <text wx:else class="user-name">{{userInfo.nickName}}</text>
+          <view class="login-tag" wx:if="{{!userInfo.isLogin}}">点击登录</view>
+        </view>
+        <text class="user-desc" wx:if="{{userInfo.isLogin}}">点击头像选择图片，点击昵称编辑</text>
+        <text class="user-desc" wx:else>登录后查看学习数据</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 学习统计数据 -->
+  <view class="stats-section card">
+    <view class="stats-item">
+      <text class="stats-number">{{stats.studyDays}}</text>
+      <text class="stats-label">学习天数</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-number">{{stats.questionCount}}</text>
+      <text class="stats-label">完成题目</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-number">{{stats.videoCount}}</text>
+      <text class="stats-label">观看视频</text>
+    </view>
+    <view class="stats-divider"></view>
+    <view class="stats-item">
+      <text class="stats-number">{{stats.score}}</text>
+      <text class="stats-label">总积分</text>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view 
+      class="menu-item card" 
+      wx:for="{{menuList}}" 
+      wx:key="id"
+      bindtap="onMenuTap"
+      data-id="{{item.id}}"
+      data-title="{{item.title}}"
+    >
+      <view class="menu-icon">{{item.icon}}</view>
+      <view class="menu-content">
+        <text class="menu-title">{{item.title}}</text>
+        <text class="menu-desc">{{item.desc}}</text>
+      </view>
+      <view class="menu-arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-section" wx:if="{{userInfo.isLogin}}">
+    <button class="logout-btn" bindtap="handleLogout">退出登录</button>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-info">
+    <text class="version-text">教育学习平台 v1.0.0</text>
   </view>
 </view>
-

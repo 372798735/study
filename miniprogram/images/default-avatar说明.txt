@@ -1,0 +1,87 @@
+========================================
+  默认头像配置说明
+========================================
+
+问题：
+代码中引用了默认头像路径：/images/default-avatar.png
+但该文件可能不存在，导致头像不显示。
+
+========================================
+  解决方案（3选1）
+========================================
+
+方案一：使用微信小程序默认头像（推荐）⭐⭐⭐
+-----------------------------------------
+修改 profile.wxml 第 10 行：
+
+原代码：
+src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"
+
+改为：
+src="{{userInfo.avatarUrl || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}"
+
+说明：使用微信官方默认头像 URL
+
+
+方案二：添加本地默认头像图片 ⭐⭐
+-----------------------------------------
+1. 准备一张头像图片（推荐尺寸：200x200px）
+2. 命名为：default-avatar.png
+3. 放入 miniprogram/images/ 文件夹
+4. 代码保持不变
+
+图片来源：
+- 在线生成：https://ui-avatars.com/
+- 免费图标库：https://www.flaticon.com/
+- 简单绘制一个圆形图标
+
+
+方案三：使用占位符文字 ⭐
+-----------------------------------------
+修改 profile.wxml，添加条件渲染：
+
+<view class="avatar-wrapper">
+  <image 
+    wx:if="{{userInfo.avatarUrl}}"
+    class="user-avatar" 
+    src="{{userInfo.avatarUrl}}" 
+    mode="aspectFill"
+  ></image>
+  <view wx:else class="default-avatar">
+    <text>👤</text>
+  </view>
+</view>
+
+在 profile.wxss 添加样式：
+.default-avatar {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 70rpx;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80rpx;
+  margin-right: 30rpx;
+}
+
+========================================
+  快速测试
+========================================
+
+如果只是想快速测试，暂时忽略默认头像：
+
+修改 profile.wxml 第 10 行：
+src="{{userInfo.avatarUrl}}"
+
+说明：未登录时头像可能显示空白，但不影响功能测试。
+
+========================================
+  推荐方案
+========================================
+
+开发测试阶段：使用方案一（微信默认头像URL）
+正式上线前：使用方案二（添加设计的默认头像图片）
+
+========================================
+
