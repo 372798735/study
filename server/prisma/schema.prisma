@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,83 +7,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 用户表
 model User {
-  id        Int      @id @default(autoincrement())
-  openid    String   @unique
-  nickname  String?
-  avatar    String?
-  role      String   @default("student")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  
-  // 关联关系
+  id              Int              @id @default(autoincrement())
+  openid          String           @unique
+  nickname        String?
+  avatar          String?
+  role            String           @default("student")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
   learningRecords LearningRecord[]
-  
+  wrongBooks      WrongBook[]
+
   @@map("users")
 }
 
-// 题目表
 model Question {
-  id          Int      @id @default(autoincrement())
-  title       String
-  content     String   @db.Text
-  type        String   // single, multiple, fill, essay
-  options     Json?    // 选择题选项
-  answer      String   @db.Text
-  explanation String?  @db.Text
-  category    String
-  difficulty  String   @default("medium")
-  imageUrl    String?  @map("image_url")
-  videoUrl    String?  @map("video_url")      // 题目讲解视频URL
-  videoDuration Int?   @map("video_duration") // 视频时长（秒）
-  createdAt   DateTime @default(now()) @map("created_at")
-  
-  // 关联关系
-  learningRecords LearningRecord[]
-  
+  id               Int              @id @default(autoincrement())
+  title            String
+  content          String           @db.Text
+  type             String
+  questionCategory String           @default("objective") @map("question_category")
+  examType         String?          @map("exam_type")
+  paperName        String?          @map("paper_name")
+  options          Json?
+  answer           String?          @db.Text
+  explanation      String?          @db.Text
+  category         String
+  difficulty       String           @default("medium")
+  imageUrl         String?          @map("image_url")
+  videoUrl         String?          @map("video_url")
+  videoDuration    Int?             @map("video_duration")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  learningRecords  LearningRecord[]
+  wrongBooks       WrongBook[]
+
   @@map("questions")
 }
 
-// 视频表
 model Video {
-  id           Int      @id @default(autoincrement())
-  title        String
-  description  String?  @db.Text
-  fileUrl      String   @map("file_url")
-  duration     Int?     // 秒数
-  category     String
-  thumbnailUrl String?  @map("thumbnail_url")
-  fileSize     BigInt?  @map("file_size")
-  createdAt    DateTime @default(now()) @map("created_at")
-  
-  // 关联关系
+  id              Int              @id @default(autoincrement())
+  title           String
+  description     String?          @db.Text
+  fileUrl         String           @map("file_url")
+  duration        Int?
+  category        String
+  thumbnailUrl    String?          @map("thumbnail_url")
+  fileSize        BigInt?          @map("file_size")
+  createdAt       DateTime         @default(now()) @map("created_at")
   learningRecords LearningRecord[]
-  
+
   @@map("videos")
 }
 
-// 学习记录表
 model LearningRecord {
   id          Int       @id @default(autoincrement())
   userId      Int       @map("user_id")
   contentId   Int       @map("content_id")
-  contentType String    @map("content_type") // question, video
-  progress    Float     @default(0) // 0-100
-  score       Int?      // 答题得分
+  contentType String    @map("content_type")
+  progress    Float     @default(0)
+  score       Int?
   completedAt DateTime? @map("completed_at")
   createdAt   DateTime  @default(now()) @map("created_at")
-  
-  // 关联关系
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  question Question? @relation(fields: [contentId], references: [id], map: "learning_records_question_id_fkey", onDelete: NoAction, onUpdate: NoAction)
-  video    Video?    @relation(fields: [contentId], references: [id], map: "learning_records_video_id_fkey", onDelete: NoAction, onUpdate: NoAction)
-  
+  question    Question? @relation(fields: [contentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "learning_records_question_id_fkey")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video       Video?    @relation(fields: [contentId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "learning_records_video_id_fkey")
+
   @@unique([userId, contentId, contentType])
+  @@index([contentId], map: "learning_records_video_id_fkey")
   @@map("learning_records")
 }
 
-// 管理员表
 model Admin {
   id        Int      @id @default(autoincrement())
   username  String   @unique
@@ -94,6 +84,40 @@ model Admin {
   email     String   @unique
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  
+
   @@map("admins")
+}
+
+model Dictionary {
+  id        Int      @id @default(autoincrement())
+  type      String
+  label     String
+  value     String
+  sort      Int      @default(0)
+  status    String   @default("active")
+  remark    String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([type, value])
+  @@map("dictionaries")
+}
+
+model WrongBook {
+  id               Int      @id @default(autoincrement())
+  userId           Int      @map("user_id")
+  questionId       Int      @map("question_id")
+  questionCategory String   @map("question_category")
+  userAnswer       String?  @map("user_answer") @db.Text
+  note             String?  @db.Text
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question         Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId])
+  @@index([userId])
+  @@index([questionId])
+  @@index([questionCategory])
+  @@map("wrong_books")
 }

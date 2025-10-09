@@ -91,7 +91,7 @@ NODE_ENV="development"
 npm run prisma:generate
 
 # 运行数据库迁移
-npm run prisma:migrate
+
 
 # 可选：向数据库填充初始数据，方便开发和测试
 npm run prisma:seed

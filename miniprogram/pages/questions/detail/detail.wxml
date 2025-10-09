@@ -28,11 +28,6 @@
   </view>
 
   <view wx:else class="detail-content">
-    <!-- 收藏按钮 -->
-    <view class="favorite-btn" bindtap="toggleFavorite">
-      <text class="favorite-icon {{isFavorite ? 'favorited' : ''}}">{{isFavorite ? '❤️' : '🤍'}}</text>
-    </view>
-
     <!-- 题目信息 -->
     <view class="question-card card">
       <view class="question-header">
@@ -46,7 +41,7 @@
       </view>
 
       <view class="question-type">
-        <text>{{question.type === 'single' ? '📝 单选题' : question.type === 'multiple' ? '✅ 多选题' : '❓ 判断题'}}</text>
+        <text>{{question.type === 'single' ? '📝 单选题' : question.type === 'multiple' ? '✅ 多选题' : question.type === 'essay' ? '✍️ 问答题' : '❓ 判断题'}}</text>
       </view>
 
       <view class="question-content">
@@ -74,16 +69,27 @@
 
       <!-- 提交按钮 -->
       <view class="submit-btn" wx:if="{{!submitted}}">
-        <button class="btn btn-primary" bindtap="submitAnswer" disabled="{{selectedAnswers.length === 0}}">
+        <button 
+          class="btn btn-primary" 
+          bindtap="submitAnswer" 
+          disabled="{{selectedAnswers.length === 0}}"
+        >
           提交答案
         </button>
       </view>
 
       <!-- 答案解析 -->
       <view class="answer-section" wx:if="{{submitted}}">
-        <view class="answer-result {{isCorrect ? 'correct' : 'wrong'}}">
+        <!-- 客观题：显示对错 -->
+        <view class="answer-result {{isCorrect ? 'correct' : 'wrong'}}" wx:if="{{question.questionCategory === 'objective'}}">
           <text class="result-icon">{{isCorrect ? '✓' : '✗'}}</text>
           <text class="result-text">{{isCorrect ? '回答正确！' : '回答错误'}}</text>
+        </view>
+        
+        <!-- 主观题：选"会"显示答对样式，选"不会"显示答错样式 -->
+        <view class="answer-result {{isCorrect ? 'correct' : 'wrong'}}" wx:if="{{question.questionCategory === 'subjective'}}">
+          <text class="result-icon">{{isCorrect ? '✓' : '✗'}}</text>
+          <text class="result-text">{{isCorrect ? '恭喜你掌握该题！' : '已加入错题本'}}</text>
         </view>
 
         <view class="correct-answer">

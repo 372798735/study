@@ -1,0 +1,156 @@
+/* pages/questions/papers/papers.wxss */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 40rpx;
+}
+
+/* 页面标题 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.header-back {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  flex: 1;
+  text-align: center;
+}
+
+.header-placeholder {
+  width: 60rpx;
+}
+
+/* 类型横幅 */
+.type-banner {
+  margin: 30rpx;
+  padding: 30rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(102, 126, 234, 0.3);
+}
+
+.type-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.type-text {
+  font-size: 32rpx;
+  color: white;
+  font-weight: bold;
+}
+
+/* 试卷列表 */
+.paper-list {
+  padding: 0 30rpx;
+}
+
+.paper-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.paper-item:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.paper-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.paper-icon {
+  font-size: 56rpx;
+  margin-right: 24rpx;
+}
+
+.paper-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.paper-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.paper-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.paper-arrow {
+  font-size: 32rpx;
+  color: #409eff;
+  margin-left: 20rpx;
+  font-weight: bold;
+}
+
+/* 卡片样式 */
+.card {
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 空状态 */
+.empty {
+  text-align: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 加载中 */
+.loading {
+  text-align: center;
+  padding: 50rpx;
+  color: #999;
+  font-size: 28rpx;
+}

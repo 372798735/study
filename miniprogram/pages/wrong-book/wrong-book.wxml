@@ -1,0 +1,39 @@
+<!--pages/wrong-book/wrong-book.wxml-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">我的错题本</text>
+    <text class="page-subtitle">复习错题，巩固知识</text>
+  </view>
+
+  <!-- 错题本入口 -->
+  <view class="wrong-book-grid">
+    <!-- 客观题错题本 -->
+    <view class="grid-item card" bindtap="goToObjectiveWrongBook">
+      <view class="item-icon objective">📝</view>
+      <text class="item-title">客观题错题本</text>
+      <text class="item-desc">单选题、多选题、判断题</text>
+      <view class="item-arrow">→</view>
+    </view>
+
+    <!-- 主观题错题本 -->
+    <view class="grid-item card" bindtap="goToSubjectiveWrongBook">
+      <view class="item-icon subjective">✍️</view>
+      <text class="item-title">主观题错题本</text>
+      <text class="item-desc">问答题、论述题、分析题</text>
+      <view class="item-arrow">→</view>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips-section">
+    <view class="tips-title">📌 使用提示</view>
+    <view class="tips-content">
+      <text class="tip-item">• 做错的客观题会自动加入错题本</text>
+      <text class="tip-item">• 主观题点击"不会"可加入错题本</text>
+      <text class="tip-item">• 错题列表中可以移除已掌握的题目</text>
+      <text class="tip-item">• 定期复习错题，提高学习效率</text>
+    </view>
+  </view>
+</view>
+

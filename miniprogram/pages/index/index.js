@@ -116,48 +116,47 @@ Page({
     });
   },
 
-  // 跳转到题目列表
-  goToQuestions() {
-    wx.switchTab({
-      url: "/pages/questions/list/list",
+  // 训练系统 - 客观题
+  goToObjectiveQuestions() {
+    wx.navigateTo({
+      url: "/pages/questions/papers/papers?questionCategory=objective",
     });
   },
 
-  // 跳转到视频列表
-  goToVideos() {
+  // 视频导笔记
+  goToVideoNotes() {
+    wx.showToast({
+      title: "视频导笔记功能开发中",
+      icon: "none",
+    });
+  },
+
+  // 训练系统 - 主观题
+  goToSubjectiveQuestions() {
+    wx.navigateTo({
+      url: "/pages/questions/papers/papers?questionCategory=subjective",
+    });
+  },
+
+  // 学习视频
+  goToStudyVideos() {
     wx.switchTab({
       url: "/pages/videos/list/list",
     });
   },
 
-  // 跳转到个人中心
-  goToProfile() {
-    wx.switchTab({
-      url: "/pages/profile/profile",
+  // 错题本
+  goToWrongBook() {
+    wx.navigateTo({
+      url: "/pages/wrong-book/wrong-book",
     });
   },
 
-  // 跳转到学习统计
-  goToStats() {
+  // 下载专区
+  goToDownload() {
     wx.showToast({
-      title: "功能开发中",
+      title: "下载专区功能开发中",
       icon: "none",
-    });
-  },
-
-  // 跳转到题目详情
-  goToQuestionDetail(e) {
-    const id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/questions/detail/detail?id=${id}`,
-    });
-  },
-
-  // 跳转到视频播放器
-  goToVideoPlayer(e) {
-    const id = e.currentTarget.dataset.id;
-    wx.navigateTo({
-      url: `/pages/videos/player/player?id=${id}`,
     });
   },
 });

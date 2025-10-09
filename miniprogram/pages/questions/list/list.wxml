@@ -1,16 +1,39 @@
 <!--pages/questions/list/list.wxml-->
 <view class="container">
+  <!-- 试卷名称横幅 -->
+  <view class="paper-banner" wx:if="{{paperName}}">
+    <view class="banner-content">
+      <text class="banner-icon">📋</text>
+      <text class="banner-title">{{paperNameLabel || paperName}}</text>
+    </view>
+  </view>
+
   <!-- 搜索栏 -->
   <view class="search-bar">
     <input class="search-input" placeholder="搜索题目..." bindinput="onSearchInput" value="{{keyword}}" />
     <view class="search-icon">🔍</view>
   </view>
 
-  <!-- 筛选栏 -->
+  <!-- 题目分类筛选 -->
+  <view class="filter-bar">
+    <scroll-view class="filter-scroll" scroll-x>
+      <view class="filter-item {{questionCategory === '' ? 'active' : ''}}" bindtap="onQuestionCategoryChange" data-value="">
+        全部题目
+      </view>
+      <view class="filter-item {{questionCategory === 'objective' ? 'active' : ''}}" bindtap="onQuestionCategoryChange" data-value="objective">
+        📝 客观题
+      </view>
+      <view class="filter-item {{questionCategory === 'subjective' ? 'active' : ''}}" bindtap="onQuestionCategoryChange" data-value="subjective">
+        ✍️ 主观题
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 学科分类筛选 -->
   <view class="filter-bar">
     <scroll-view class="filter-scroll" scroll-x>
       <view class="filter-item {{category === '' ? 'active' : ''}}" bindtap="onCategoryChange" data-value="">
-        全部
+        全部学科
       </view>
       <view class="filter-item {{category === item ? 'active' : ''}}" wx:for="{{categories}}" wx:key="*this" bindtap="onCategoryChange" data-value="{{item}}">
         {{item}}
@@ -18,6 +41,7 @@
     </scroll-view>
   </view>
 
+  <!-- 难度筛选 -->
   <view class="filter-bar">
     <scroll-view class="filter-scroll" scroll-x>
       <view class="filter-item {{difficulty === '' ? 'active' : ''}}" bindtap="onDifficultyChange" data-value="">
@@ -37,19 +61,26 @@
 
   <!-- 题目列表 -->
   <view class="question-list">
-    <view class="question-item card" wx:for="{{questions}}" wx:key="id" bindtap="goToDetail" data-id="{{item.id}}">
-      <view class="question-header">
-        <text class="question-title">{{item.title}}</text>
-        <view class="tag tag-{{item.difficulty === 'easy' ? 'success' : item.difficulty === 'medium' ? 'warning' : 'danger'}}">
-          {{item.difficulty === 'easy' ? '简单' : item.difficulty === 'medium' ? '中等' : '困难'}}
+    <view class="question-item card" wx:for="{{questions}}" wx:key="id">
+      <view bindtap="goToDetail" data-id="{{item.id}}">
+        <view class="question-header">
+          <text class="question-title">{{item.title}}</text>
+          <view class="tag tag-{{item.difficulty === 'easy' ? 'success' : item.difficulty === 'medium' ? 'warning' : 'danger'}}">
+            {{item.difficulty === 'easy' ? '简单' : item.difficulty === 'medium' ? '中等' : '困难'}}
+          </view>
+        </view>
+        <text class="question-content">{{item.content}}</text>
+        <view class="question-footer">
+          <text class="category-tag">📚 {{item.category}}</text>
+          <text class="type-tag">
+            {{item.type === 'single' ? '📝 单选题' : item.type === 'multiple' ? '✅ 多选题' : '❓ 判断题'}}
+          </text>
         </view>
       </view>
-      <text class="question-content">{{item.content}}</text>
-      <view class="question-footer">
-        <text class="category-tag">📚 {{item.category}}</text>
-        <text class="type-tag">
-          {{item.type === 'single' ? '📝 单选题' : item.type === 'multiple' ? '✅ 多选题' : '❓ 判断题'}}
-        </text>
+      
+      <!-- 错题本移除按钮 -->
+      <view class="remove-btn" wx:if="{{isWrongBook}}" bindtap="removeFromWrongBook" data-id="{{item.id}}" catchtap="removeFromWrongBook">
+        <text>移除错题本</text>
       </view>
     </view>
 

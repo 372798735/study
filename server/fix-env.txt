@@ -1,0 +1,9 @@
+# 修复说明：请手动修改 .env 文件
+
+找到这一行：
+DATABASE_URL="mysql://root:root@localhost:3306/education_db"
+
+修改为：
+DATABASE_URL="mysql://root:root@localhost:3306/education_db?charset=utf8mb4"
+
+添加 ?charset=utf8mb4 参数

@@ -22,11 +22,54 @@
           />
         </el-form-item>
 
-        <el-form-item label="题目类型" prop="type">
+        <el-form-item label="题目分类" prop="questionCategory">
+          <el-select
+            v-model="form.questionCategory"
+            placeholder="请选择题目分类"
+            @change="handleCategoryChange"
+          >
+            <el-option label="客观题" value="objective" />
+            <el-option label="主观题" value="subjective" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item
+          v-if="form.questionCategory === 'objective'"
+          label="题目类型"
+          prop="type"
+        >
           <el-select v-model="form.type" placeholder="请选择题目类型">
             <el-option label="单选题" value="single" />
             <el-option label="多选题" value="multiple" />
-            <el-option label="判断题" value="judge" />
+            <el-option label="填空题" value="fill" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="试题类型">
+          <el-select
+            v-model="form.examType"
+            placeholder="请选择试题类型"
+            clearable
+          >
+            <el-option label="真题" value="real" />
+            <el-option label="模拟题" value="mock" />
+            <el-option label="专题" value="special" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="试卷名称">
+          <el-select
+            v-model="form.paperName"
+            placeholder="请选择试卷名称"
+            clearable
+            filterable
+          >
+            <el-option
+              v-for="paper in paperNameList"
+              :key="paper.value"
+              :label="paper.label"
+              :value="paper.value"
+            />
           </el-select>
         </el-form-item>
 
@@ -57,9 +100,14 @@
           >
             <el-input
               v-model="form.options[index]"
-              :placeholder="`选项 ${String.fromCharCode(65 + index)}`"
+              :placeholder="
+                form.questionCategory === 'subjective'
+                  ? `选项 ${index + 1}`
+                  : `选项 ${String.fromCharCode(65 + index)}`
+              "
+              :disabled="form.questionCategory === 'subjective'"
             >
-              <template #append>
+              <template v-if="form.questionCategory === 'objective'" #append>
                 <el-button
                   @click="removeOption(index)"
                   :disabled="form.options.length <= 2"
@@ -68,13 +116,31 @@
               </template>
             </el-input>
           </div>
-          <el-button @click="addOption" type="primary" plain
+          <!-- <el-button
+            v-if="form.questionCategory === 'objective'"
+            @click="addOption"
+            type="primary"
+            plain
             >添加选项</el-button
-          >
+          > -->
         </el-form-item>
 
-        <el-form-item label="正确答案" prop="answer">
-          <el-input v-model="form.answer" placeholder="请输入正确答案" />
+        <el-form-item
+          :label="
+            form.questionCategory === 'objective' ? '正确答案' : '参考答案'
+          "
+          prop="answer"
+        >
+          <el-input
+            v-model="form.answer"
+            :type="form.questionCategory === 'subjective' ? 'textarea' : 'text'"
+            :rows="form.questionCategory === 'subjective' ? 3 : undefined"
+            :placeholder="
+              form.questionCategory === 'objective'
+                ? '请输入正确答案，如：A 或 AB'
+                : '请输入参考答案或解答思路（主观题）'
+            "
+          />
         </el-form-item>
 
         <el-form-item label="答案解析" prop="explanation">
@@ -152,6 +218,7 @@ import {
 } from "element-plus";
 import { UploadFilled } from "@element-plus/icons-vue";
 import { getQuestion, updateQuestion } from "@/api/questions";
+import { getDictionaryByType } from "@/api/dictionary";
 import { getToken } from "@/utils/auth";
 
 const router = useRouter();
@@ -179,10 +246,16 @@ const uploadHeaders = computed(() => ({
   Authorization: `Bearer ${getToken()}`,
 }));
 
+// 试卷名称列表
+const paperNameList = ref<Array<{ label: string; value: string }>>([]);
+
 const form = reactive({
   title: "",
   content: "",
   type: "single",
+  questionCategory: "objective",
+  examType: "",
+  paperName: "",
   difficulty: "medium",
   category: "",
   options: ["", "", "", ""],
@@ -191,10 +264,23 @@ const form = reactive({
   videoUrl: "",
 });
 
+// 加载试卷名称列表
+const loadPaperNames = async () => {
+  try {
+    const response = await getDictionaryByType("paper_name");
+    paperNameList.value = response.data;
+  } catch (error) {
+    console.error("加载试卷名称失败:", error);
+  }
+};
+
 const rules: FormRules = {
   title: [{ required: true, message: "请输入题目标题", trigger: "blur" }],
   content: [{ required: true, message: "请输入题目内容", trigger: "blur" }],
   type: [{ required: true, message: "请选择题目类型", trigger: "change" }],
+  questionCategory: [
+    { required: true, message: "请选择题目分类", trigger: "change" },
+  ],
   difficulty: [{ required: true, message: "请选择难度", trigger: "change" }],
   category: [{ required: true, message: "请选择分类", trigger: "change" }],
   answer: [{ required: true, message: "请输入正确答案", trigger: "blur" }],
@@ -256,6 +342,25 @@ const removeVideo = () => {
   form.videoUrl = "";
 };
 
+// 处理题目分类变化
+const handleCategoryChange = (value: string) => {
+  if (value === "subjective") {
+    // 主观题：固定为"会"和"不会"两个选项，不需要题目类型和正确答案
+    form.options = ["会", "不会"];
+    form.type = "single";
+    form.answer = "";
+  } else {
+    // 客观题：如果当前选项是["会", "不会"]，恢复为4个空选项
+    if (
+      form.options.length === 2 &&
+      form.options[0] === "会" &&
+      form.options[1] === "不会"
+    ) {
+      form.options = ["", "", "", ""];
+    }
+  }
+};
+
 const submitForm = async () => {
   if (!formRef.value) return;
 
@@ -281,6 +386,7 @@ const goBack = () => {
 };
 
 onMounted(() => {
+  loadPaperNames();
   loadQuestion();
 });
 </script>

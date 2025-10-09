@@ -14,7 +14,10 @@ export class QuestionsService {
     category?: string,
     type?: string,
     difficulty?: string,
-    keyword?: string
+    keyword?: string,
+    questionCategory?: string,
+    examType?: string,
+    paperName?: string
   ) {
     const skip = (page - 1) * limit;
     const where: any = {};
@@ -30,6 +33,22 @@ export class QuestionsService {
 
     if (difficulty && difficulty !== "undefined" && difficulty.trim() !== "") {
       where.difficulty = difficulty;
+    }
+
+    if (
+      questionCategory &&
+      questionCategory !== "undefined" &&
+      questionCategory.trim() !== ""
+    ) {
+      where.questionCategory = questionCategory;
+    }
+
+    if (examType && examType !== "undefined" && examType.trim() !== "") {
+      where.examType = examType;
+    }
+
+    if (paperName && paperName !== "undefined" && paperName.trim() !== "") {
+      where.paperName = paperName;
     }
 
     if (keyword && keyword !== "undefined" && keyword.trim() !== "") {
@@ -50,6 +69,9 @@ export class QuestionsService {
           title: true,
           content: true,
           type: true,
+          questionCategory: true,
+          examType: true,
+          paperName: true,
           category: true,
           difficulty: true,
           imageUrl: true,

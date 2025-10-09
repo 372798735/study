@@ -40,6 +40,45 @@
           </el-select>
         </el-form-item>
 
+        <el-form-item label="题目分类">
+          <el-select
+            v-model="searchForm.questionCategory"
+            placeholder="请选择题目分类"
+            clearable
+          >
+            <el-option label="客观题" value="objective" />
+            <el-option label="主观题" value="subjective" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="试题类型">
+          <el-select
+            v-model="searchForm.examType"
+            placeholder="请选择试题类型"
+            clearable
+          >
+            <el-option label="真题" value="real" />
+            <el-option label="模拟题" value="mock" />
+            <el-option label="专题" value="special" />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="试卷名称">
+          <el-select
+            v-model="searchForm.paperName"
+            placeholder="请选择试卷名称"
+            clearable
+            filterable
+          >
+            <el-option
+              v-for="paper in paperNameList"
+              :key="paper.value"
+              :label="paper.label"
+              :value="paper.value"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="难度">
           <el-select
             v-model="searchForm.difficulty"
@@ -113,7 +152,42 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="category" label="分类" width="120" />
+        <el-table-column prop="questionCategory" label="题目分类" width="110">
+          <template #default="{ row }">
+            <el-tag
+              :type="getQuestionCategoryTagType(row.questionCategory)"
+              size="small"
+            >
+              {{ getQuestionCategoryText(row.questionCategory) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="examType" label="试题类型" width="100">
+          <template #default="{ row }">
+            <el-tag
+              v-if="row.examType"
+              :type="getExamTypeTagType(row.examType)"
+              size="small"
+            >
+              {{ getExamTypeText(row.examType) }}
+            </el-tag>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="paperName"
+          label="试卷名称"
+          width="150"
+          show-overflow-tooltip
+        >
+          <template #default="{ row }">
+            {{ getPaperNameLabel(row.paperName) || "-" }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="category" label="学科" width="100" />
 
         <el-table-column prop="difficulty" label="难度" width="100">
           <template #default="{ row }">
@@ -166,13 +240,17 @@ import {
   deleteQuestion,
   batchDeleteQuestions,
 } from "@/api/questions";
-import { formatDate } from "@/utils/format";
+import { getDictionaryByType } from "@/api/dictionary";
 import type { Question, QuestionListParams } from "@/types/question";
+import { formatDate } from "@/utils/format";
 
 const router = useRouter();
 
 // 加载状态
 const loading = ref(false);
+
+// 试卷名称列表
+const paperNameList = ref<Array<{ label: string; value: string }>>([]);
 
 // 搜索表单
 const searchForm = reactive({
@@ -180,7 +258,20 @@ const searchForm = reactive({
   category: "",
   type: "",
   difficulty: "",
+  questionCategory: "",
+  examType: "",
+  paperName: "",
 });
+
+// 加载试卷名称列表
+const loadPaperNames = async () => {
+  try {
+    const response = await getDictionaryByType("paper_name");
+    paperNameList.value = response.data;
+  } catch (error) {
+    console.error("加载试卷名称失败:", error);
+  }
+};
 
 // 分类选项
 const categories = ref([
@@ -223,6 +314,10 @@ const loadQuestions = async () => {
     if (searchForm.category) params.category = searchForm.category;
     if (searchForm.type) params.type = searchForm.type;
     if (searchForm.difficulty) params.difficulty = searchForm.difficulty;
+    if (searchForm.questionCategory)
+      params.questionCategory = searchForm.questionCategory;
+    if (searchForm.examType) params.examType = searchForm.examType;
+    if (searchForm.paperName) params.paperName = searchForm.paperName;
 
     const response = await getQuestions(params);
     questionList.value = response.data.list;
@@ -247,6 +342,9 @@ const handleReset = () => {
     category: "",
     type: "",
     difficulty: "",
+    questionCategory: "",
+    examType: "",
+    paperName: "",
   });
   pagination.page = 1;
   loadQuestions();
@@ -370,7 +468,53 @@ const getDifficultyText = (difficulty: string) => {
   return difficultyMap[difficulty] || difficulty;
 };
 
+// 获取题目分类标签类型
+const getQuestionCategoryTagType = (questionCategory: string) => {
+  const categoryMap: Record<string, string> = {
+    objective: "primary",
+    subjective: "success",
+  };
+  return categoryMap[questionCategory] || "info";
+};
+
+// 获取题目分类文本
+const getQuestionCategoryText = (questionCategory: string) => {
+  const categoryMap: Record<string, string> = {
+    objective: "客观题",
+    subjective: "主观题",
+  };
+  return categoryMap[questionCategory] || questionCategory;
+};
+
+// 获取试题类型标签类型
+const getExamTypeTagType = (examType: string) => {
+  const typeMap: Record<string, string> = {
+    real: "danger",
+    mock: "warning",
+    special: "info",
+  };
+  return typeMap[examType] || "info";
+};
+
+// 获取试题类型文本
+const getExamTypeText = (examType: string) => {
+  const typeMap: Record<string, string> = {
+    real: "真题",
+    mock: "模拟题",
+    special: "专题",
+  };
+  return typeMap[examType] || examType;
+};
+
+// 获取试卷名称显示文本
+const getPaperNameLabel = (paperName?: string) => {
+  if (!paperName) return "";
+  const paper = paperNameList.value.find((p) => p.value === paperName);
+  return paper?.label || paperName;
+};
+
 onMounted(() => {
+  loadPaperNames();
   loadQuestions();
 });
 </script>

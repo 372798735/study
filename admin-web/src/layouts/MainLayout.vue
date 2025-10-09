@@ -34,6 +34,11 @@
           <span>数据统计</span>
         </el-menu-item>
 
+        <el-menu-item index="/dictionary">
+          <el-icon><SetUp /></el-icon>
+          <span>字典管理</span>
+        </el-menu-item>
+
         <el-menu-item index="/settings">
           <el-icon><Setting /></el-icon>
           <span>个人设置</span>
@@ -102,6 +107,7 @@ import {
   VideoPlay,
   DataAnalysis,
   Setting,
+  SetUp,
   Fold,
   Expand,
   User,

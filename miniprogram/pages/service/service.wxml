@@ -1,0 +1,66 @@
+<!--pages/service/service.wxml-->
+<view class="service-container">
+  <view class="service-card">
+    <!-- 客服图标 -->
+    <view class="service-icon">
+      <text>💬</text>
+    </view>
+
+    <!-- 标题 -->
+    <view class="service-title">在线客服</view>
+    <view class="service-desc">点击下方按钮，联系我们的客服团队</view>
+
+    <!-- 客服按钮 -->
+    <button 
+      class="service-btn" 
+      open-type="contact"
+      bindcontact="handleContact"
+      session-from="miniprogram"
+    >
+      <text class="btn-icon">💬</text>
+      <text class="btn-text">联系客服</text>
+    </button>
+
+    <!-- 提示信息 -->
+    <view class="service-tips">
+      <view class="tips-title">💡 服务时间</view>
+      <view class="tips-content">
+        <text>周一至周五：9:00 - 18:00</text>
+        <text>周末及节假日：10:00 - 17:00</text>
+      </view>
+    </view>
+
+    <!-- 其他联系方式 -->
+    <view class="contact-info">
+      <view class="info-title">其他联系方式</view>
+      <view class="info-item">
+        <text class="info-icon">📧</text>
+        <text class="info-text">邮箱：support@example.com</text>
+      </view>
+      <view class="info-item">
+        <text class="info-icon">📞</text>
+        <text class="info-text">电话：400-123-4567</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷功能 -->
+  <view class="quick-actions">
+    <view class="action-title">快捷功能</view>
+    <view class="action-list">
+      <view class="action-item" bindtap="goToQuestions">
+        <text class="action-icon">📝</text>
+        <text class="action-text">题目练习</text>
+      </view>
+      <view class="action-item" bindtap="goToVideos">
+        <text class="action-icon">🎬</text>
+        <text class="action-text">视频学习</text>
+      </view>
+      <view class="action-item" bindtap="goToProfile">
+        <text class="action-icon">👤</text>
+        <text class="action-text">个人中心</text>
+      </view>
+    </view>
+  </view>
+</view>
+

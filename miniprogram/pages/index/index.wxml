@@ -1,111 +1,48 @@
 <!--pages/index/index.wxml-->
 <view class="container">
-  <!-- 轮播图 -->
-  <swiper class="banner" indicator-dots autoplay interval="3000" circular>
-    <swiper-item>
-      <view class="banner-item banner-1">
-        <text class="banner-title">欢迎来到教育学习平台</text>
-      </view>
-    </swiper-item>
-    <swiper-item>
-      <view class="banner-item banner-2">
-        <text class="banner-title">海量题库 随时练习</text>
-      </view>
-    </swiper-item>
-    <swiper-item>
-      <view class="banner-item banner-3">
-        <text class="banner-title">精品视频 轻松学习</text>
-      </view>
-    </swiper-item>
-  </swiper>
-
-  <!-- 统计卡片 -->
-  <!-- <view class="stats-card card">
-    <view class="stats-item">
-      <text class="stats-number">{{stats.questionCount}}</text>
-      <text class="stats-label">题目总数</text>
-    </view>
-    <view class="stats-divider"></view>
-    <view class="stats-item">
-      <text class="stats-number">{{stats.videoCount}}</text>
-      <text class="stats-label">视频总数</text>
-    </view>
-    <view class="stats-divider"></view>
-    <view class="stats-item">
-      <text class="stats-number">{{stats.studyDays}}</text>
-      <text class="stats-label">学习天数</text>
-    </view>
-  </view> -->
-
-  <!-- 快捷入口 -->
-  <!-- <view class="quick-nav">
-    <view class="quick-item" bindtap="goToQuestions">
-      <view class="quick-icon">📝</view>
-      <text class="quick-text">题目练习</text>
-    </view>
-    <view class="quick-item" bindtap="goToVideos">
-      <view class="quick-icon">🎬</view>
-      <text class="quick-text">视频学习</text>
-    </view>
-    <view class="quick-item" bindtap="goToProfile">
-      <view class="quick-icon">👤</view>
-      <text class="quick-text">个人中心</text>
-    </view>
-    <view class="quick-item" bindtap="goToStats">
-      <view class="quick-icon">📊</view>
-      <text class="quick-text">学习统计</text>
-    </view>
-  </view> -->
-
-  <!-- 推荐内容 -->
-  <view class="section">
-    <view class="section-header">
-      <text class="section-title">🔥 热门题目</text>
-      <text class="section-more" bindtap="goToQuestions">更多 ></text>
-    </view>
-    <view class="question-list">
-      <!-- 题目列表 -->
-      <view class="question-item card" wx:for="{{questions}}" wx:key="id" bindtap="goToQuestionDetail" data-id="{{item.id}}">
-        <view class="question-header">
-          <text class="question-title">{{item.title}}</text>
-          <view class="tag tag-{{item.difficulty === 'easy' ? 'success' : item.difficulty === 'medium' ? 'warning' : 'danger'}}">
-            {{item.difficulty === 'easy' ? '简单' : item.difficulty === 'medium' ? '中等' : '困难'}}
-          </view>
-        </view>
-        <text class="question-content">{{item.content}}</text>
-        <view class="question-meta">
-          <text class="meta-item">📚 {{item.category}}</text>
-          <text class="meta-item">{{item.type === 'single' ? '📝 单选题' : item.type === 'multiple' ? '✅ 多选题' : item.type === 'fill' ? '✍️ 填空题' : '📖 简答题'}}</text>
-        </view>
-      </view>
-
-      <!-- 空状态提示 -->
-      <view class="empty-state" wx:if="{{questions.length === 0}}">
-        <view class="empty-icon">📝</view>
-        <text class="empty-text">暂无题目数据</text>
-        <text class="empty-hint">请先在管理后台添加题目</text>
-      </view>
-    </view>
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">教育学习平台</text>
   </view>
 
-  <!-- 推荐视频 -->
-  <!-- <view class="section">
-    <view class="section-header">
-      <text class="section-title">精品视频</text>
-      <text class="section-more" bindtap="goToVideos">更多 ></text>
+  <!-- 功能网格 -->
+  <view class="function-grid">
+    <!-- 第一行 -->
+    <view class="grid-item grid-item-gray" bindtap="goToObjectiveQuestions">
+      <view class="grid-icon">📝</view>
+      <text class="grid-title">训练系统</text>
+      <text class="grid-subtitle">(客观题)</text>
+      <view class="grid-badge">HOT</view>
     </view>
-    <view class="video-list">
-      <view class="video-item card" wx:for="{{videos}}" wx:key="id" bindtap="goToVideoPlayer" data-id="{{item.id}}">
-        <image class="video-cover" src="{{item.thumbnailUrl || '/images/video-default.png'}}" mode="aspectFill"></image>
-        <view class="video-info">
-          <text class="video-title">{{item.title}}</text>
-          <view class="video-meta">
-            <text class="meta-item">{{item.category}}</text>
-            <text class="meta-item" wx:if="{{item.duration}}">{{item.duration}}分钟</text>
-          </view>
-        </view>
-      </view>
+    <view class="grid-item grid-item-gray" bindtap="goToVideoNotes">
+      <view class="grid-icon">📹</view>
+      <text class="grid-title">视频导笔记</text>
+      <view class="grid-corner"></view>
     </view>
-  </view> -->
-</view>
 
+    <!-- 第二行 -->
+    <view class="grid-item grid-item-blue" bindtap="goToSubjectiveQuestions">
+      <view class="grid-icon">✍️</view>
+      <text class="grid-title">训练系统</text>
+      <text class="grid-subtitle">(主观题)</text>
+      <view class="grid-corner"></view>
+    </view>
+    <view class="grid-item grid-item-blue" bindtap="goToStudyVideos">
+      <view class="grid-icon">🎬</view>
+      <text class="grid-title">学习视频</text>
+      <view class="grid-badge">NEW</view>
+    </view>
+
+    <!-- 第三行 -->
+    <view class="grid-item grid-item-light" bindtap="goToWrongBook">
+      <view class="grid-icon">📖</view>
+      <text class="grid-title">错题本</text>
+      <view class="grid-corner"></view>
+    </view>
+    <view class="grid-item grid-item-light" bindtap="goToDownload">
+      <view class="grid-icon">⬇️</view>
+      <text class="grid-title">下载专区</text>
+      <view class="grid-corner"></view>
+    </view>
+  </view>
+</view>

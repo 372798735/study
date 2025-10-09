@@ -1,0 +1,54 @@
+<!--pages/questions/papers/papers.wxml-->
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <view class="header-back" bindtap="goBack">
+      <text class="back-icon">◀</text>
+    </view>
+    <text class="page-title">选择试卷</text>
+    <view class="header-placeholder"></view>
+  </view>
+
+  <!-- 试卷类型说明 -->
+  <view class="type-banner" wx:if="{{questionCategory}}">
+    <text class="type-icon">{{questionCategory === 'objective' ? '📝' : '✍️'}}</text>
+    <text class="type-text">
+      {{isWrongBook ? '错题本 - ' : ''}}{{questionCategory === 'objective' ? '客观题试卷' : '主观题试卷'}}
+    </text>
+  </view>
+
+  <!-- 试卷列表 -->
+  <view class="paper-list">
+    <view 
+      class="paper-item card" 
+      wx:for="{{papers}}" 
+      wx:key="id" 
+      bindtap="goToPaperQuestions" 
+      data-value="{{item.value}}"
+      data-label="{{item.label}}"
+    >
+      <view class="paper-content">
+        <view class="paper-icon">📋</view>
+        <view class="paper-info">
+          <text class="paper-name">{{item.label}}</text>
+          <text class="paper-desc" wx:if="{{isWrongBook && item.questionCount}}">{{item.questionCount}} 道错题</text>
+          <text class="paper-desc" wx:else>点击查看试卷题目</text>
+        </view>
+      </view>
+      <view class="paper-arrow">→</view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty" wx:if="{{!loading && papers.length === 0}}">
+      <view class="empty-icon">📋</view>
+      <view class="empty-text">暂无试卷</view>
+      <view class="empty-hint">请联系管理员添加试卷</view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </view>
+</view>
+

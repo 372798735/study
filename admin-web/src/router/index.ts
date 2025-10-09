@@ -73,6 +73,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@/views/settings/index.vue"),
         meta: { title: "个人设置", icon: "Setting" },
       },
+      {
+        path: "dictionary",
+        name: "Dictionary",
+        component: () => import("@/views/dictionary/index.vue"),
+        meta: { title: "字典管理", icon: "SetUp" },
+      },
     ],
   },
   {

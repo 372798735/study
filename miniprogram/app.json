@@ -1,11 +1,14 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/wrong-book/wrong-book",
+    "pages/questions/papers/papers",
     "pages/questions/list/list",
     "pages/questions/detail/detail",
     "pages/videos/list/list",
     "pages/videos/player/player",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/service/service"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -27,8 +30,8 @@
         "selectedIconPath": "images/tabbar/home-active.png"
       },
       {
-        "pagePath": "pages/questions/list/list",
-        "text": "题目",
+        "pagePath": "pages/service/service",
+        "text": "互动",
         "iconPath": "images/tabbar/question.png",
         "selectedIconPath": "images/tabbar/question-active.png"
       },

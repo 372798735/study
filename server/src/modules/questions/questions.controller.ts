@@ -32,10 +32,21 @@ export class QuestionsController {
   @ApiOperation({ summary: "获取题目列表" })
   @ApiQuery({ name: "page", required: false, description: "页码" })
   @ApiQuery({ name: "limit", required: false, description: "每页数量" })
-  @ApiQuery({ name: "category", required: false, description: "分类" })
+  @ApiQuery({ name: "category", required: false, description: "学科分类" })
   @ApiQuery({ name: "type", required: false, description: "题目类型" })
   @ApiQuery({ name: "difficulty", required: false, description: "难度" })
   @ApiQuery({ name: "keyword", required: false, description: "关键词" })
+  @ApiQuery({
+    name: "questionCategory",
+    required: false,
+    description: "题目分类(客观题/主观题)",
+  })
+  @ApiQuery({
+    name: "examType",
+    required: false,
+    description: "试题类型(真题/模拟题/专题)",
+  })
+  @ApiQuery({ name: "paperName", required: false, description: "试卷名称" })
   @ApiResponse({ status: 200, description: "题目列表" })
   async findAll(
     @Query("page") page: string = "1",
@@ -43,7 +54,10 @@ export class QuestionsController {
     @Query("category") category?: string,
     @Query("type") type?: string,
     @Query("difficulty") difficulty?: string,
-    @Query("keyword") keyword?: string
+    @Query("keyword") keyword?: string,
+    @Query("questionCategory") questionCategory?: string,
+    @Query("examType") examType?: string,
+    @Query("paperName") paperName?: string
   ) {
     // 将字符串参数转换为数字
     const pageNum = parseInt(page) || 1;
@@ -55,7 +69,10 @@ export class QuestionsController {
       category,
       type,
       difficulty,
-      keyword
+      keyword,
+      questionCategory,
+      examType,
+      paperName
     );
   }
 

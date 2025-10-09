@@ -1,56 +1,87 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, IsArray, IsEnum } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  IsEnum,
+} from "class-validator";
 
 export class CreateQuestionDto {
-  @ApiProperty({ description: '题目标题' })
+  @ApiProperty({ description: "题目标题" })
   @IsString()
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty({ description: '题目内容' })
+  @ApiProperty({ description: "题目内容" })
   @IsString()
   @IsNotEmpty()
   content: string;
 
-  @ApiProperty({ description: '题目类型', enum: ['single', 'multiple', 'fill', 'essay'] })
-  @IsEnum(['single', 'multiple', 'fill', 'essay'])
+  @ApiProperty({
+    description: "题目类型",
+    enum: ["single", "multiple", "fill", "essay"],
+  })
+  @IsEnum(["single", "multiple", "fill", "essay"])
   type: string;
 
-  @ApiProperty({ description: '选择题选项', required: false })
+  @ApiProperty({
+    description: "题目分类",
+    enum: ["objective", "subjective"],
+    default: "objective",
+  })
+  @IsEnum(["objective", "subjective"])
+  questionCategory: string;
+
+  @ApiProperty({
+    description: "试题类型",
+    enum: ["real", "mock", "special"],
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(["real", "mock", "special"])
+  examType?: string;
+
+  @ApiProperty({ description: "试卷名称", required: false })
+  @IsOptional()
+  @IsString()
+  paperName?: string;
+
+  @ApiProperty({ description: "选择题选项", required: false })
   @IsOptional()
   @IsArray()
   options?: string[];
 
-  @ApiProperty({ description: '正确答案' })
+  @ApiProperty({ description: "正确答案", required: false })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  answer: string;
+  answer?: string;
 
-  @ApiProperty({ description: '题目解析', required: false })
+  @ApiProperty({ description: "题目解析", required: false })
   @IsOptional()
   @IsString()
   explanation?: string;
 
-  @ApiProperty({ description: '题目分类' })
+  @ApiProperty({ description: "学科分类" })
   @IsString()
   @IsNotEmpty()
   category: string;
 
-  @ApiProperty({ description: '难度级别', enum: ['easy', 'medium', 'hard'] })
-  @IsEnum(['easy', 'medium', 'hard'])
+  @ApiProperty({ description: "难度级别", enum: ["easy", "medium", "hard"] })
+  @IsEnum(["easy", "medium", "hard"])
   difficulty: string;
 
-  @ApiProperty({ description: '题目图片URL', required: false })
+  @ApiProperty({ description: "题目图片URL", required: false })
   @IsOptional()
   @IsString()
   imageUrl?: string;
 
-  @ApiProperty({ description: '讲解视频URL', required: false })
+  @ApiProperty({ description: "讲解视频URL", required: false })
   @IsOptional()
   @IsString()
   videoUrl?: string;
 
-  @ApiProperty({ description: '视频时长（秒）', required: false })
+  @ApiProperty({ description: "视频时长（秒）", required: false })
   @IsOptional()
   videoDuration?: number;
 }

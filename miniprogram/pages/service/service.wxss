@@ -1,0 +1,201 @@
+/* pages/service/service.wxss */
+.service-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 30rpx;
+}
+
+/* 客服卡片 */
+.service-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 60rpx 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-bottom: 40rpx;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 客服图标 */
+.service-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10rpx);
+  }
+}
+
+/* 标题 */
+.service-title {
+  font-size: 44rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.service-desc {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 40rpx;
+}
+
+/* 客服按钮 */
+.service-btn {
+  width: 100%;
+  height: 96rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.4);
+  margin-bottom: 40rpx;
+  transition: all 0.3s ease;
+}
+
+.service-btn::after {
+  border: none;
+}
+
+.service-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.3);
+}
+
+.btn-icon {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.btn-text {
+  font-size: 32rpx;
+}
+
+/* 提示信息 */
+.service-tips {
+  background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 30rpx;
+  text-align: left;
+}
+
+.tips-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #e67e22;
+  margin-bottom: 16rpx;
+}
+
+.tips-content {
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.8;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+/* 联系方式 */
+.contact-info {
+  text-align: left;
+  padding-top: 30rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.info-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.info-icon {
+  font-size: 32rpx;
+  margin-right: 12rpx;
+}
+
+.info-text {
+  flex: 1;
+}
+
+/* 快捷功能 */
+.quick-actions {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.5s ease-out 0.1s both;
+}
+
+.action-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.action-list {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.action-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx 20rpx;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+  border-radius: 16rpx;
+  transition: all 0.3s ease;
+}
+
+.action-item:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+}
+
+.action-icon {
+  font-size: 48rpx;
+  margin-bottom: 12rpx;
+}
+
+.action-text {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+}
