@@ -39,7 +39,6 @@ export class VideosService {
           title: true,
           description: true,
           fileUrl: true,
-          duration: true,
           category: true,
           thumbnailUrl: true,
           fileSize: true,

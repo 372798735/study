@@ -1,9 +1,53 @@
 <!--pages/videos/list/list.wxml-->
 <view class="container">
-  <view class="page-title">视频列表</view>
-  <view class="empty">
-    <view class="empty-icon">🎬</view>
-    <view class="empty-text">功能开发中...</view>
+  <!-- 分类横幅 -->
+  <view class="category-banner" wx:if="{{categoryLabel}}">
+    <view class="banner-content">
+      <text class="banner-icon">📺</text>
+      <text class="banner-title">{{categoryLabel}}</text>
+    </view>
+  </view>
+
+  <!-- 视频列表 -->
+  <view class="videos-wrapper" wx:if="{{videos.length > 0}}">
+    <view 
+      class="video-card" 
+      wx:for="{{videos}}" 
+      wx:key="id"
+      bindtap="playVideo"
+      data-id="{{item.id}}"
+    >
+      <view class="video-thumbnail">
+        <image 
+          src="{{item.thumbnailUrl || '/images/default-video.png'}}" 
+          mode="aspectFill"
+          class="thumbnail-img"
+        />
+        <view class="play-icon">▶</view>
+      </view>
+      <view class="video-info">
+        <text class="video-title">{{item.title}}</text>
+        <text class="video-category">{{item.category}}</text>
+        <text class="video-time">{{item.createdAt}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading && page === 1}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && videos.length === 0}}">
+    <view class="empty-icon">📺</view>
+    <view class="empty-text">暂无视频</view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{videos.length > 0}}">
+    <text wx:if="{{loading}}">加载中...</text>
+    <text wx:elif="{{!hasMore}}">没有更多了</text>
   </view>
 </view>
 

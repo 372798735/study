@@ -134,4 +134,55 @@ export class UploadService {
       mimetype: file.mimetype,
     };
   }
+
+  async uploadDocument(file: Express.Multer.File) {
+    // 生成唯一文件名
+    const fileExtension = path.extname(file.originalname);
+    const fileName = `${uuidv4()}${fileExtension}`;
+    const ossPath = `documents/${fileName}`;
+
+    // 如果配置了 OSS，上传到 OSS
+    if (this.useOSS()) {
+      try {
+        // 上传文件（继承 Bucket 的 ACL 设置）
+        const result = await this.ossClient.put(ossPath, file.buffer);
+
+        return {
+          url: result.url,
+          filename: fileName,
+          originalName: file.originalname,
+          size: file.size,
+          mimetype: file.mimetype,
+        };
+      } catch (error) {
+        console.error("OSS 文档上传失败，详细错误:", error);
+        throw new Error(`文档上传失败: ${error.message || error}`);
+      }
+    }
+
+    // 否则保存到本地
+    const uploadPath =
+      this.configService.get<string>("UPLOAD_PATH") || "./uploads";
+    const documentDir = path.join(uploadPath, "documents");
+
+    // 确保目录存在
+    if (!fs.existsSync(documentDir)) {
+      fs.mkdirSync(documentDir, { recursive: true });
+    }
+
+    const filePath = path.join(documentDir, fileName);
+    fs.writeFileSync(filePath, file.buffer);
+
+    const baseUrl =
+      this.configService.get<string>("BASE_URL") || "http://localhost:3000";
+    const fileUrl = `${baseUrl}/uploads/documents/${fileName}`;
+
+    return {
+      url: fileUrl,
+      filename: fileName,
+      originalName: file.originalname,
+      size: file.size,
+      mimetype: file.mimetype,
+    };
+  }
 }

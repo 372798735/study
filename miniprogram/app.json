@@ -5,8 +5,10 @@
     "pages/questions/papers/papers",
     "pages/questions/list/list",
     "pages/questions/detail/detail",
+    "pages/videos/categories/categories",
     "pages/videos/list/list",
     "pages/videos/player/player",
+    "pages/video-notes/list/list",
     "pages/profile/profile",
     "pages/service/service"
   ],

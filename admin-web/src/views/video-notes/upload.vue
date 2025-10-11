@@ -1,0 +1,234 @@
+<template>
+  <div class="video-note-upload">
+    <el-card>
+      <template #header>
+        <div class="card-header">
+          <span>上传笔记</span>
+          <el-button type="text" @click="goBack">返回</el-button>
+        </div>
+      </template>
+
+      <el-form :model="form" :rules="rules" ref="formRef" label-width="100px">
+        <el-form-item label="笔记标题" prop="title">
+          <el-input v-model="form.title" placeholder="请输入笔记标题" />
+        </el-form-item>
+
+        <el-form-item label="笔记描述" prop="description">
+          <el-input
+            v-model="form.description"
+            type="textarea"
+            :rows="4"
+            placeholder="请输入笔记描述"
+          />
+        </el-form-item>
+
+        <el-form-item label="文件类型" prop="fileType">
+          <el-radio-group v-model="form.fileType">
+            <el-radio value="word">Word文档</el-radio>
+            <el-radio value="pdf">PDF文档</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="文档文件" prop="fileUrl">
+          <el-upload
+            class="upload-demo"
+            drag
+            :action="documentUploadUrl"
+            :headers="uploadHeaders"
+            :on-success="handleUploadSuccess"
+            :on-error="handleUploadError"
+            :before-upload="beforeUpload"
+            :accept="acceptFileType"
+            :show-file-list="false"
+          >
+            <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            <div class="el-upload__text">拖拽文件到此处或<em>点击上传</em></div>
+            <template #tip>
+              <div class="el-upload__tip">
+                支持
+                {{
+                  form.fileType === "pdf" ? "PDF" : "Word (DOC/DOCX)"
+                }}
+                格式，文件大小不超过 50MB
+              </div>
+            </template>
+          </el-upload>
+          <div v-if="form.fileUrl" class="file-preview">
+            <el-tag type="success">文件已上传：{{ form.fileName }}</el-tag>
+            <div class="file-info">
+              <span>大小：{{ formatFileSize(form.fileSize) }}</span>
+            </div>
+          </div>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="submitForm" :loading="loading"
+            >提交</el-button
+          >
+          <el-button @click="resetForm">重置</el-button>
+          <el-button @click="goBack">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, reactive, computed } from "vue";
+import { useRouter } from "vue-router";
+import {
+  ElMessage,
+  type FormInstance,
+  type FormRules,
+  type UploadProps,
+} from "element-plus";
+import { UploadFilled } from "@element-plus/icons-vue";
+import { createVideoNote } from "@/api/video-notes";
+import { getToken } from "@/utils/auth";
+
+const router = useRouter();
+const formRef = ref<FormInstance>();
+const loading = ref(false);
+
+const documentUploadUrl = computed(() => "/api/v1/upload/document");
+const uploadHeaders = computed(() => ({
+  Authorization: `Bearer ${getToken()}`,
+}));
+
+const acceptFileType = computed(() => {
+  return form.fileType === "pdf"
+    ? ".pdf"
+    : ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+});
+
+const form = reactive({
+  title: "",
+  description: "",
+  fileType: "word" as "word" | "pdf",
+  fileUrl: "",
+  fileName: "",
+  fileSize: 0,
+});
+
+const rules: FormRules = {
+  title: [{ required: true, message: "请输入笔记标题", trigger: "blur" }],
+  fileType: [{ required: true, message: "请选择文件类型", trigger: "change" }],
+  fileUrl: [{ required: true, message: "请上传文档文件", trigger: "change" }],
+};
+
+const beforeUpload: UploadProps["beforeUpload"] = (file) => {
+  const isCorrectType =
+    form.fileType === "pdf"
+      ? file.type === "application/pdf"
+      : file.type === "application/msword" ||
+        file.type ===
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+  const isLt50M = file.size / 1024 / 1024 < 50;
+
+  if (!isCorrectType) {
+    ElMessage.error(
+      `请上传${form.fileType === "pdf" ? "PDF" : "Word"}格式的文件!`
+    );
+    return false;
+  }
+  if (!isLt50M) {
+    ElMessage.error("文档大小不能超过 50MB!");
+    return false;
+  }
+  return true;
+};
+
+const handleUploadSuccess = (response: any) => {
+  console.log("上传成功:", response);
+  form.fileUrl = response.data.url;
+  form.fileName = response.data.originalName;
+  form.fileSize = response.data.size;
+  ElMessage.success("文档上传成功");
+};
+
+const handleUploadError = (error: any) => {
+  console.error("上传失败:", error);
+  ElMessage.error("文档上传失败");
+};
+
+const formatFileSize = (bytes?: number) => {
+  if (!bytes) return "-";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+};
+
+const submitForm = async () => {
+  if (!formRef.value) return;
+
+  await formRef.value.validate(async (valid) => {
+    if (valid) {
+      loading.value = true;
+      try {
+        const videoNoteData = {
+          title: form.title,
+          description: form.description,
+          fileType: form.fileType,
+          fileUrl: form.fileUrl,
+          fileName: form.fileName,
+          fileSize: form.fileSize,
+        };
+        await createVideoNote(videoNoteData);
+        ElMessage.success("上传成功");
+        router.push("/video-notes");
+      } catch (error) {
+        ElMessage.error("上传失败");
+      } finally {
+        loading.value = false;
+      }
+    }
+  });
+};
+
+const resetForm = () => {
+  formRef.value?.resetFields();
+  form.fileUrl = "";
+  form.fileName = "";
+  form.fileSize = 0;
+};
+
+const goBack = () => {
+  router.back();
+};
+</script>
+
+<style scoped lang="scss">
+.video-note-upload {
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .el-form {
+    max-width: 600px;
+
+    .el-input,
+    .el-select,
+    .el-radio-group {
+      width: 100%;
+    }
+
+    .el-textarea {
+      width: 100%;
+    }
+  }
+
+  .file-preview {
+    margin-top: 10px;
+
+    .file-info {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #606266;
+    }
+  }
+}
+</style>

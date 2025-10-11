@@ -49,7 +49,6 @@ model Video {
   title           String
   description     String?          @db.Text
   fileUrl         String           @map("file_url")
-  duration        Int?
   category        String
   thumbnailUrl    String?          @map("thumbnail_url")
   fileSize        BigInt?          @map("file_size")
@@ -120,4 +119,18 @@ model WrongBook {
   @@index([questionId])
   @@index([questionCategory])
   @@map("wrong_books")
+}
+
+model VideoNote {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  fileUrl     String   @map("file_url")
+  fileType    String   @map("file_type") // 'word' or 'pdf'
+  fileName    String   @map("file_name")
+  fileSize    BigInt?  @map("file_size")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("video_notes")
 }

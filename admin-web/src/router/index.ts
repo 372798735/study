@@ -62,6 +62,24 @@ const routes: RouteRecordRaw[] = [
         meta: { title: "编辑视频", hidden: true },
       },
       {
+        path: "video-notes",
+        name: "VideoNotes",
+        component: () => import("@/views/video-notes/index.vue"),
+        meta: { title: "视频号笔记", icon: "Notebook" },
+      },
+      {
+        path: "video-notes/upload",
+        name: "VideoNoteUpload",
+        component: () => import("@/views/video-notes/upload.vue"),
+        meta: { title: "上传笔记", hidden: true },
+      },
+      {
+        path: "video-notes/edit/:id",
+        name: "VideoNoteEdit",
+        component: () => import("@/views/video-notes/edit.vue"),
+        meta: { title: "编辑笔记", hidden: true },
+      },
+      {
         path: "statistics",
         name: "Statistics",
         component: () => import("@/views/statistics/index.vue"),

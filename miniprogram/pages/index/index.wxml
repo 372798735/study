@@ -16,7 +16,7 @@
     </view>
     <view class="grid-item grid-item-gray" bindtap="goToVideoNotes">
       <view class="grid-icon">📹</view>
-      <text class="grid-title">视频导笔记</text>
+      <text class="grid-title">视频号笔记</text>
       <view class="grid-corner"></view>
     </view>
 

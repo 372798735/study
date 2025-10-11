@@ -10,6 +10,7 @@ import { StatisticsModule } from "./modules/statistics/statistics.module";
 import { UploadModule } from "./modules/upload/upload.module";
 import { DictionaryModule } from "./modules/dictionary/dictionary.module";
 import { WrongBookModule } from "./modules/wrong-book/wrong-book.module";
+import { VideoNotesModule } from "./modules/video-notes/video-notes.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
@@ -41,6 +42,7 @@ import { AppService } from "./app.service";
     UploadModule,
     DictionaryModule,
     WrongBookModule,
+    VideoNotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

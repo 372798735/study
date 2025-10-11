@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 export class StatisticsService {
@@ -66,30 +66,30 @@ export class StatisticsService {
     ] = await Promise.all([
       this.prisma.question.count(),
       this.prisma.question.groupBy({
-        by: ['type'],
+        by: ["type"],
         _count: true,
       }),
       this.prisma.question.groupBy({
-        by: ['category'],
+        by: ["category"],
         _count: true,
       }),
       this.prisma.question.groupBy({
-        by: ['difficulty'],
+        by: ["difficulty"],
         _count: true,
       }),
     ]);
 
     return {
       total: totalQuestions,
-      byType: questionsByType.map(item => ({
+      byType: questionsByType.map((item) => ({
         type: item.type,
         count: item._count,
       })),
-      byCategory: questionsByCategory.map(item => ({
+      byCategory: questionsByCategory.map((item) => ({
         category: item.category,
         count: item._count,
       })),
-      byDifficulty: questionsByDifficulty.map(item => ({
+      byDifficulty: questionsByDifficulty.map((item) => ({
         difficulty: item.difficulty,
         count: item._count,
       })),
@@ -97,21 +97,11 @@ export class StatisticsService {
   }
 
   async getVideoStats() {
-    const [
-      totalVideos,
-      videosByCategory,
-      totalDuration,
-      totalSize,
-    ] = await Promise.all([
+    const [totalVideos, videosByCategory, totalSize] = await Promise.all([
       this.prisma.video.count(),
       this.prisma.video.groupBy({
-        by: ['category'],
+        by: ["category"],
         _count: true,
-      }),
-      this.prisma.video.aggregate({
-        _sum: {
-          duration: true,
-        },
       }),
       this.prisma.video.aggregate({
         _sum: {
@@ -122,36 +112,35 @@ export class StatisticsService {
 
     return {
       total: totalVideos,
-      byCategory: videosByCategory.map(item => ({
+      byCategory: videosByCategory.map((item) => ({
         category: item.category,
         count: item._count,
       })),
-      totalDuration: totalDuration._sum.duration || 0,
       totalSize: totalSize._sum.fileSize || 0,
     };
   }
 
   async getUserStats() {
-    const [
-      totalUsers,
-      activeUsers,
-      userRecords,
-    ] = await Promise.all([
+    const [totalUsers, activeUsers, userRecords] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.learningRecord.groupBy({
-        by: ['userId'],
+        by: ["userId"],
         _count: true,
       }),
       this.prisma.learningRecord.groupBy({
-        by: ['userId', 'contentType'],
+        by: ["userId", "contentType"],
         _count: true,
       }),
     ]);
 
     const activeUserCount = activeUsers.length;
-    const averageRecordsPerUser = activeUserCount > 0 
-      ? Math.round(activeUsers.reduce((sum, user) => sum + user._count, 0) / activeUserCount)
-      : 0;
+    const averageRecordsPerUser =
+      activeUserCount > 0
+        ? Math.round(
+            activeUsers.reduce((sum, user) => sum + user._count, 0) /
+              activeUserCount
+          )
+        : 0;
 
     return {
       total: totalUsers,

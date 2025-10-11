@@ -10,8 +10,8 @@
       <video 
         id="mainVideo"
         class="video-player" 
-        src="{{video.url}}" 
-        poster="{{video.coverUrl || ''}}"
+        src="{{video.fileUrl}}" 
+        poster="{{video.thumbnailUrl || ''}}"
         title="{{video.title}}"
         controls
         show-center-play-btn="{{true}}"

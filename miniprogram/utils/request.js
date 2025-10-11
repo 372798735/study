@@ -1,7 +1,7 @@
 // 网络请求封装
 const app = getApp();
 
-const BASE_URL = "http://localhost:3000/api/v1";
+const BASE_URL = "http://192.168.1.2/api/v1";
 
 /**
  * 发起网络请求

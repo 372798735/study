@@ -123,11 +123,10 @@ Page({
     });
   },
 
-  // 视频导笔记
+  // 视频号笔记
   goToVideoNotes() {
-    wx.showToast({
-      title: "视频导笔记功能开发中",
-      icon: "none",
+    wx.navigateTo({
+      url: "/pages/video-notes/list/list",
     });
   },
 
@@ -140,8 +139,8 @@ Page({
 
   // 学习视频
   goToStudyVideos() {
-    wx.switchTab({
-      url: "/pages/videos/list/list",
+    wx.navigateTo({
+      url: "/pages/videos/categories/categories",
     });
   },
 

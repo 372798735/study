@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
 
 @Injectable()
 export class UsersService {
@@ -19,13 +19,18 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('用户不存在');
+      throw new NotFoundException("用户不存在");
     }
 
     return user;
   }
 
-  async getRecords(userId: number, page: number, limit: number, contentType?: string) {
+  async getRecords(
+    userId: number,
+    page: number,
+    limit: number,
+    contentType?: string
+  ) {
     const skip = (page - 1) * limit;
     const where: any = { userId };
 
@@ -38,7 +43,7 @@ export class UsersService {
         where,
         skip,
         take: limit,
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
         include: {
           question: {
             select: {
@@ -53,7 +58,6 @@ export class UsersService {
               id: true,
               title: true,
               category: true,
-              duration: true,
             },
           },
         },
@@ -62,13 +66,14 @@ export class UsersService {
     ]);
 
     // 格式化记录数据
-    const formattedRecords = records.map(record => ({
+    const formattedRecords = records.map((record) => ({
       id: record.id,
       contentType: record.contentType,
       contentId: record.contentId,
-      contentTitle: record.contentType === 'question' 
-        ? record.question?.title 
-        : record.video?.title,
+      contentTitle:
+        record.contentType === "question"
+          ? record.question?.title
+          : record.video?.title,
       progress: record.progress,
       score: record.score,
       completedAt: record.completedAt,
@@ -98,21 +103,21 @@ export class UsersService {
       this.prisma.learningRecord.count({
         where: {
           userId,
-          contentType: 'question',
+          contentType: "question",
           completedAt: { not: null },
         },
       }),
       this.prisma.learningRecord.count({
         where: {
           userId,
-          contentType: 'video',
+          contentType: "video",
           completedAt: { not: null },
         },
       }),
       this.prisma.learningRecord.findMany({
         where: {
           userId,
-          contentType: 'question',
+          contentType: "question",
         },
         select: {
           score: true,
@@ -121,7 +126,7 @@ export class UsersService {
       this.prisma.learningRecord.findMany({
         where: {
           userId,
-          contentType: 'video',
+          contentType: "video",
         },
         select: {
           progress: true,
@@ -131,13 +136,23 @@ export class UsersService {
 
     // 计算正确率
     const totalQuestionAttempts = questionRecords.length;
-    const correctAnswers = questionRecords.filter(record => record.score === 100).length;
-    const accuracy = totalQuestionAttempts > 0 ? Math.round((correctAnswers / totalQuestionAttempts) * 100) : 0;
+    const correctAnswers = questionRecords.filter(
+      (record) => record.score === 100
+    ).length;
+    const accuracy =
+      totalQuestionAttempts > 0
+        ? Math.round((correctAnswers / totalQuestionAttempts) * 100)
+        : 0;
 
     // 计算学习时长（分钟）
-    const totalVideoProgress = videoRecords.reduce((sum, record) => sum + record.progress, 0);
+    const totalVideoProgress = videoRecords.reduce(
+      (sum, record) => sum + record.progress,
+      0
+    );
     const averageVideoDuration = 10; // 假设平均视频时长10分钟
-    const studyTime = Math.round((totalVideoProgress / 100) * averageVideoDuration);
+    const studyTime = Math.round(
+      (totalVideoProgress / 100) * averageVideoDuration
+    );
 
     return {
       totalQuestions,

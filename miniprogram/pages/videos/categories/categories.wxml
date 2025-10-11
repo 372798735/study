@@ -1,0 +1,39 @@
+<!--pages/videos/categories/categories.wxml-->
+<view class="container">
+  <view class="page-header">
+    <text class="page-title">学习视频</text>
+    <text class="page-desc">选择分类查看视频</text>
+  </view>
+
+  <view class="categories-wrapper" wx:if="{{!loading && categories.length > 0}}">
+    <view 
+      class="category-card" 
+      wx:for="{{categories}}" 
+      wx:key="id"
+      bindtap="goToCategoryVideos"
+      data-value="{{item.value}}"
+      data-label="{{item.label}}"
+    >
+      <view class="category-icon">
+        <text class="icon-text">{{item.label[0]}}</text>
+      </view>
+      <view class="category-info">
+        <text class="category-name">{{item.label}}</text>
+        <text class="category-desc">点击查看视频</text>
+      </view>
+      <view class="category-arrow">
+        <text>→</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && categories.length === 0}}">
+    <view class="empty-icon">📺</view>
+    <view class="empty-text">暂无视频分类</view>
+  </view>
+</view>
+

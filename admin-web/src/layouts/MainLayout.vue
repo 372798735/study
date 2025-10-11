@@ -29,6 +29,11 @@
           <span>视频管理</span>
         </el-menu-item>
 
+        <el-menu-item index="/video-notes">
+          <el-icon><Notebook /></el-icon>
+          <span>视频号笔记</span>
+        </el-menu-item>
+
         <el-menu-item index="/statistics">
           <el-icon><DataAnalysis /></el-icon>
           <span>数据统计</span>
@@ -105,6 +110,7 @@ import {
   DataBoard,
   Document,
   VideoPlay,
+  Notebook,
   DataAnalysis,
   Setting,
   SetUp,

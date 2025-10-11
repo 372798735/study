@@ -79,4 +79,37 @@ export class UploadController {
 
     return this.uploadService.uploadVideo(file);
   }
+
+  @Post("document")
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "上传文档（Word/PDF）" })
+  @ApiConsumes("multipart/form-data")
+  @ApiResponse({ status: 201, description: "文档上传成功" })
+  @ApiResponse({ status: 400, description: "文件格式不支持" })
+  @ApiResponse({ status: 401, description: "未授权" })
+  async uploadDocument(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException("请选择要上传的文件");
+    }
+
+    // 检查文件类型
+    const allowedTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!allowedTypes.includes(file.mimetype)) {
+      throw new BadRequestException("只支持 PDF、DOC、DOCX 格式的文档");
+    }
+
+    // 检查文件大小 (50MB)
+    const maxSize = 50 * 1024 * 1024;
+    if (file.size > maxSize) {
+      throw new BadRequestException("文档大小不能超过 50MB");
+    }
+
+    return this.uploadService.uploadDocument(file);
+  }
 }

@@ -1,0 +1,66 @@
+<!--pages/video-notes/list/list.wxml-->
+<view class="container">
+  <!-- 笔记列表 -->
+  <view class="notes-wrapper" wx:if="{{notes.length > 0}}">
+    <view 
+      class="note-card" 
+      wx:for="{{notes}}" 
+      wx:key="id"
+      bindtap="previewFile"
+      data-url="{{item.fileUrl}}"
+      data-type="{{item.fileType}}"
+      data-title="{{item.title}}"
+    >
+      <view class="note-header">
+        <view class="note-icon {{item.fileType === 'pdf' ? 'pdf' : 'word'}}">
+          <text>{{item.fileType === 'pdf' ? '📄' : '📝'}}</text>
+        </view>
+        <view class="note-info">
+          <text class="note-title">{{item.title}}</text>
+          <text class="note-type">{{item.fileType === 'pdf' ? 'PDF' : 'Word'}} 文档</text>
+        </view>
+      </view>
+      
+      <view class="note-description" wx:if="{{item.description}}">
+        <text>{{item.description}}</text>
+      </view>
+      
+      <view class="note-footer">
+        <text class="note-size">大小：{{formatFileSize(item.fileSize)}}</text>
+        <text class="note-time">{{item.createdAt}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading && page === 1}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && notes.length === 0}}">
+    <view class="empty-icon">📚</view>
+    <view class="empty-text">暂无笔记</view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{notes.length > 0}}">
+    <text wx:if="{{loading}}">加载中...</text>
+    <text wx:elif="{{!hasMore}}">没有更多了</text>
+  </view>
+</view>
+
+<wxs module="utils">
+  var formatFileSize = function(bytes) {
+    if (!bytes) return "-";
+    var k = 1024;
+    var sizes = ["B", "KB", "MB", "GB"];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+  };
+  
+  module.exports = {
+    formatFileSize: formatFileSize
+  };
+</wxs>
+

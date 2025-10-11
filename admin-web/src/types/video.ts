@@ -4,7 +4,6 @@ export interface Video {
   title: string;
   description?: string;
   fileUrl: string;
-  duration?: number;
   category: string;
   thumbnailUrl?: string;
   fileSize?: number;
@@ -16,7 +15,6 @@ export interface VideoForm {
   title: string;
   description?: string;
   fileUrl: string;
-  duration?: number;
   category: string;
   thumbnailUrl?: string;
   fileSize?: number;
