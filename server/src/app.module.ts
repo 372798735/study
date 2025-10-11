@@ -11,6 +11,7 @@ import { UploadModule } from "./modules/upload/upload.module";
 import { DictionaryModule } from "./modules/dictionary/dictionary.module";
 import { WrongBookModule } from "./modules/wrong-book/wrong-book.module";
 import { VideoNotesModule } from "./modules/video-notes/video-notes.module";
+import { DownloadResourcesModule } from "./modules/download-resources/download-resources.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
@@ -43,6 +44,7 @@ import { AppService } from "./app.service";
     DictionaryModule,
     WrongBookModule,
     VideoNotesModule,
+    DownloadResourcesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

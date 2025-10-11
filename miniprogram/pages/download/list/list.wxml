@@ -1,0 +1,68 @@
+<!--pages/download/list/list.wxml-->
+<view class="container">
+  <!-- 资源列表 -->
+  <view class="resources-wrapper" wx:if="{{resources.length > 0}}">
+    <view 
+      class="resource-card" 
+      wx:for="{{resources}}" 
+      wx:key="id"
+      bindtap="downloadFile"
+      data-url="{{item.fileUrl}}"
+      data-type="{{item.fileType}}"
+      data-title="{{item.title}}"
+      data-filename="{{item.fileName}}"
+    >
+      <view class="resource-header">
+        <view class="resource-icon {{item.fileType === 'pdf' ? 'pdf' : 'word'}}">
+          <text>{{item.fileType === 'pdf' ? '📄' : '📝'}}</text>
+        </view>
+        <view class="resource-info">
+          <text class="resource-title">{{item.title}}</text>
+          <text class="resource-type">{{item.fileType === 'pdf' ? 'PDF' : 'Word'}} 文档</text>
+        </view>
+        <view class="download-icon">⬇️</view>
+      </view>
+      
+      <view class="resource-description" wx:if="{{item.description}}">
+        <text>{{item.description}}</text>
+      </view>
+      
+      <view class="resource-footer">
+        <text class="resource-size">大小：{{formatFileSize(item.fileSize)}}</text>
+        <text class="resource-time">{{item.createdAt}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading" wx:if="{{loading && page === 1}}">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && resources.length === 0}}">
+    <view class="empty-icon">📦</view>
+    <view class="empty-text">暂无资源</view>
+  </view>
+
+  <!-- 加载更多 -->
+  <view class="load-more" wx:if="{{resources.length > 0}}">
+    <text wx:if="{{loading}}">加载中...</text>
+    <text wx:elif="{{!hasMore}}">没有更多了</text>
+  </view>
+</view>
+
+<wxs module="utils">
+  var formatFileSize = function(bytes) {
+    if (!bytes) return "-";
+    var k = 1024;
+    var sizes = ["B", "KB", "MB", "GB"];
+    var i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+  };
+  
+  module.exports = {
+    formatFileSize: formatFileSize
+  };
+</wxs>
+

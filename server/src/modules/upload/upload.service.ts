@@ -141,6 +141,16 @@ export class UploadService {
     const fileName = `${uuidv4()}${fileExtension}`;
     const ossPath = `documents/${fileName}`;
 
+    // 解码原始文件名（处理中文乱码问题）
+    let originalName = file.originalname;
+    try {
+      // 尝试解码 Buffer 编码的文件名
+      originalName = Buffer.from(file.originalname, "latin1").toString("utf8");
+    } catch (error) {
+      // 如果解码失败，使用原始文件名
+      originalName = file.originalname;
+    }
+
     // 如果配置了 OSS，上传到 OSS
     if (this.useOSS()) {
       try {
@@ -150,7 +160,7 @@ export class UploadService {
         return {
           url: result.url,
           filename: fileName,
-          originalName: file.originalname,
+          originalName: originalName,
           size: file.size,
           mimetype: file.mimetype,
         };
@@ -180,7 +190,7 @@ export class UploadService {
     return {
       url: fileUrl,
       filename: fileName,
-      originalName: file.originalname,
+      originalName: originalName,
       size: file.size,
       mimetype: file.mimetype,
     };

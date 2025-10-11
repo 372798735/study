@@ -153,9 +153,8 @@ Page({
 
   // 下载专区
   goToDownload() {
-    wx.showToast({
-      title: "下载专区功能开发中",
-      icon: "none",
+    wx.navigateTo({
+      url: "/pages/download/list/list",
     });
   },
 });

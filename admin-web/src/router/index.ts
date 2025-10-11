@@ -80,6 +80,24 @@ const routes: RouteRecordRaw[] = [
         meta: { title: "编辑笔记", hidden: true },
       },
       {
+        path: "download-resources",
+        name: "DownloadResources",
+        component: () => import("@/views/download-resources/index.vue"),
+        meta: { title: "笔记下载管理", icon: "Download" },
+      },
+      {
+        path: "download-resources/upload",
+        name: "DownloadResourceUpload",
+        component: () => import("@/views/download-resources/upload.vue"),
+        meta: { title: "上传资源", hidden: true },
+      },
+      {
+        path: "download-resources/edit/:id",
+        name: "DownloadResourceEdit",
+        component: () => import("@/views/download-resources/edit.vue"),
+        meta: { title: "编辑资源", hidden: true },
+      },
+      {
         path: "statistics",
         name: "Statistics",
         component: () => import("@/views/statistics/index.vue"),

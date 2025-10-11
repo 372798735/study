@@ -9,6 +9,7 @@
     "pages/videos/list/list",
     "pages/videos/player/player",
     "pages/video-notes/list/list",
+    "pages/download/list/list",
     "pages/profile/profile",
     "pages/service/service"
   ],

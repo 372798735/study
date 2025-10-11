@@ -34,6 +34,11 @@
           <span>视频号笔记</span>
         </el-menu-item>
 
+        <el-menu-item index="/download-resources">
+          <el-icon><Download /></el-icon>
+          <span>笔记下载管理</span>
+        </el-menu-item>
+
         <el-menu-item index="/statistics">
           <el-icon><DataAnalysis /></el-icon>
           <span>数据统计</span>
@@ -111,6 +116,7 @@ import {
   Document,
   VideoPlay,
   Notebook,
+  Download,
   DataAnalysis,
   Setting,
   SetUp,
