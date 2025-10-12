@@ -85,8 +85,8 @@ Page({
     if (token && userInfo) {
       this.setData({
         "userInfo.isLogin": true,
-        "userInfo.nickName": userInfo.nickName || "微信用户",
-        "userInfo.avatarUrl": userInfo.avatarUrl || "",
+        "userInfo.nickName": userInfo.nickname || userInfo.nickName || "用户",
+        "userInfo.avatarUrl": userInfo.avatar || userInfo.avatarUrl || "",
       });
     } else {
       this.setData({
@@ -457,23 +457,23 @@ Page({
           wx.removeStorageSync("token");
           wx.removeStorageSync("userInfo");
 
-          // 重置数据
-          this.setData({
-            "userInfo.isLogin": false,
-            "userInfo.nickName": "未登录",
-            "userInfo.avatarUrl": "",
-            stats: {
-              studyDays: 0,
-              questionCount: 0,
-              videoCount: 0,
-              score: 0,
-            },
-          });
+          // 调用全局退出方法
+          if (app.logout) {
+            app.logout();
+          }
 
           wx.showToast({
             title: "已退出登录",
             icon: "success",
+            duration: 1500,
           });
+
+          // 跳转到登录页
+          setTimeout(() => {
+            wx.reLaunch({
+              url: "/pages/login/login",
+            });
+          }, 1500);
         }
       },
     });

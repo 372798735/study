@@ -1,5 +1,6 @@
 // pages/videos/list/list.js
 const app = getApp();
+const { request } = require("../../../utils/request");
 
 Page({
   data: {
@@ -31,7 +32,7 @@ Page({
   },
 
   // 加载视频列表
-  loadVideos() {
+  async loadVideos() {
     if (this.data.loading || !this.data.hasMore) return;
 
     this.setData({ loading: true });
@@ -45,43 +46,38 @@ Page({
       params.category = this.data.category;
     }
 
-    wx.request({
-      url: `${app.globalData.apiBaseUrl}/videos`,
-      method: "GET",
-      data: params,
-      success: (res) => {
-        console.log("视频列表返回:", res);
+    try {
+      const res = await request({
+        url: "/videos",
+        method: "GET",
+        data: params,
+      });
 
-        if (res.statusCode === 200 && res.data.code === 200) {
-          const newVideos = res.data.data.list || [];
-          const hasMore = newVideos.length >= this.data.limit;
+      console.log("视频列表返回:", res);
 
-          this.setData({
-            videos:
-              this.data.page === 1
-                ? newVideos
-                : [...this.data.videos, ...newVideos],
-            hasMore,
-            loading: false,
-          });
-        } else {
-          console.error("加载视频失败:", res.data.message);
-          wx.showToast({
-            title: "加载失败",
-            icon: "none",
-          });
-          this.setData({ loading: false });
-        }
-      },
-      fail: (err) => {
-        console.error("加载视频网络错误:", err);
+      if (res.code === 200) {
+        const newVideos = res.data.list || [];
+        const hasMore = newVideos.length >= this.data.limit;
+
+        this.setData({
+          videos:
+            this.data.page === 1
+              ? newVideos
+              : [...this.data.videos, ...newVideos],
+          hasMore,
+        });
+      } else {
+        console.error("加载视频失败:", res.message);
         wx.showToast({
-          title: "网络错误",
+          title: res.message || "加载失败",
           icon: "none",
         });
-        this.setData({ loading: false });
-      },
-    });
+      }
+    } catch (err) {
+      console.error("加载视频错误:", err);
+    } finally {
+      this.setData({ loading: false });
+    }
   },
 
   // 下拉刷新

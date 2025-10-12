@@ -1,7 +1,4 @@
 // 网络请求封装
-const app = getApp();
-
-const BASE_URL = "http://192.168.1.2/api/v1";
 
 /**
  * 发起网络请求
@@ -9,6 +6,10 @@ const BASE_URL = "http://192.168.1.2/api/v1";
  */
 function request(options) {
   return new Promise((resolve, reject) => {
+    // 在函数内部获取 app 实例，避免初始化时序问题
+    const app = getApp();
+    const BASE_URL = app.globalData.apiBaseUrl;
+
     // 获取token
     const token = wx.getStorageSync("token");
 

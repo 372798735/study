@@ -1,5 +1,6 @@
 // pages/videos/categories/categories.js
 const app = getApp();
+const { request } = require("../../../utils/request");
 
 Page({
   data: {
@@ -12,38 +13,33 @@ Page({
   },
 
   // 加载视频分类列表
-  loadCategories() {
+  async loadCategories() {
     this.setData({ loading: true });
 
-    wx.request({
-      url: `${app.globalData.apiBaseUrl}/dictionary/type/video_category`,
-      method: "GET",
-      success: (res) => {
-        console.log("视频分类返回:", res);
+    try {
+      const res = await request({
+        url: "/dictionary/type/video_category",
+        method: "GET",
+      });
 
-        if (res.statusCode === 200 && res.data.code === 200) {
-          this.setData({
-            categories: res.data.data || [],
-            loading: false,
-          });
-        } else {
-          console.error("加载视频分类失败:", res.data.message);
-          wx.showToast({
-            title: "加载失败",
-            icon: "none",
-          });
-          this.setData({ loading: false });
-        }
-      },
-      fail: (err) => {
-        console.error("加载视频分类网络错误:", err);
+      console.log("视频分类返回:", res);
+
+      if (res.code === 200) {
+        this.setData({
+          categories: res.data || [],
+        });
+      } else {
+        console.error("加载视频分类失败:", res.message);
         wx.showToast({
-          title: "网络错误",
+          title: res.message || "加载失败",
           icon: "none",
         });
-        this.setData({ loading: false });
-      },
-    });
+      }
+    } catch (err) {
+      console.error("加载视频分类错误:", err);
+    } finally {
+      this.setData({ loading: false });
+    }
   },
 
   // 进入某个分类的视频列表

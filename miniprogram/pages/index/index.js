@@ -116,7 +116,7 @@ Page({
     });
   },
 
-  // 训练系统 - 客观题
+  // 航晧高考数学 - 客观题
   goToObjectiveQuestions() {
     wx.navigateTo({
       url: "/pages/questions/papers/papers?questionCategory=objective",
@@ -130,7 +130,7 @@ Page({
     });
   },
 
-  // 训练系统 - 主观题
+  // 航晧高考数学 - 主观题
   goToSubjectiveQuestions() {
     wx.navigateTo({
       url: "/pages/questions/papers/papers?questionCategory=subjective",

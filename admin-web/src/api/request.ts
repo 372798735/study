@@ -46,14 +46,20 @@ service.interceptors.response.use(
     console.error("响应错误:", error);
 
     if (error.response) {
-      const { status, data } = error.response as any;
+      const { status, data, config } = error.response as any;
 
       switch (status) {
         case 401:
-          ElMessage.error("登录已过期，请重新登录");
-          // 清除token并跳转到登录页
-          removeToken();
-          window.location.href = "/login";
+          // 判断是登录接口返回的401还是其他接口的401
+          if (config.url && config.url.includes("/auth/login")) {
+            // 登录接口的401 = 用户名或密码错误
+            ElMessage.error(data?.message || "用户名或密码错误");
+          } else {
+            // 其他接口的401 = token过期或无效
+            ElMessage.error("登录已过期，请重新登录");
+            removeToken();
+            window.location.href = "/login";
+          }
           break;
         case 403:
           ElMessage.error("没有权限访问该资源");

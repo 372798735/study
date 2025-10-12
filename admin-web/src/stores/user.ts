@@ -14,6 +14,8 @@ export const useUserStore = defineStore("user", () => {
   const loginAction = async (loginForm: LoginForm) => {
     try {
       const response = await login(loginForm);
+      // 后端返回 { code: 200, data: { access_token, user } }
+      // request.ts 拦截器返回整个响应体，所以从 response.data 获取
       const { access_token } = response.data;
 
       token.value = access_token;

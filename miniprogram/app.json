@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/login",
     "pages/index/index",
     "pages/wrong-book/wrong-book",
     "pages/questions/papers/papers",

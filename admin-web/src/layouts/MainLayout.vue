@@ -49,6 +49,11 @@
           <span>字典管理</span>
         </el-menu-item>
 
+        <el-menu-item index="/users">
+          <el-icon><User /></el-icon>
+          <span>账号管理</span>
+        </el-menu-item>
+
         <el-menu-item index="/settings">
           <el-icon><Setting /></el-icon>
           <span>个人设置</span>

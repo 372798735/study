@@ -1,87 +1,78 @@
-========================================
-  默认头像配置说明
-========================================
+# 默认头像说明
 
-问题：
-代码中引用了默认头像路径：/images/default-avatar.png
-但该文件可能不存在，导致头像不显示。
+## 文件位置
+`miniprogram/images/default-avatar.png`
 
-========================================
-  解决方案（3选1）
-========================================
+## 获取默认头像的方法
 
-方案一：使用微信小程序默认头像（推荐）⭐⭐⭐
------------------------------------------
-修改 profile.wxml 第 10 行：
+### 方法1：使用在线头像（推荐）
 
-原代码：
-src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"
+1. 访问以下网站下载免费头像：
+   - https://www.flaticon.com/free-icons/user
+   - https://www.iconfont.cn （搜索"用户头像"）
+   - https://undraw.co/illustrations
 
-改为：
-src="{{userInfo.avatarUrl || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}"
+2. 下载一张合适的头像图片
+3. 命名为 `default-avatar.png`
+4. 放到 `miniprogram/images/` 目录
 
-说明：使用微信官方默认头像 URL
+### 方法2：使用 Emoji 表情
 
+如果暂时没有图片，可以使用 emoji：
 
-方案二：添加本地默认头像图片 ⭐⭐
------------------------------------------
-1. 准备一张头像图片（推荐尺寸：200x200px）
-2. 命名为：default-avatar.png
-3. 放入 miniprogram/images/ 文件夹
-4. 代码保持不变
+修改 `miniprogram/pages/profile/profile.wxml` 第 10 行：
 
-图片来源：
-- 在线生成：https://ui-avatars.com/
-- 免费图标库：https://www.flaticon.com/
-- 简单绘制一个圆形图标
+```xml
+<!-- 使用 emoji 作为默认头像 -->
+<view class="avatar-emoji" wx:if="{{!userInfo.avatarUrl}}">👤</view>
+<image 
+  wx:else
+  class="user-avatar" 
+  src="{{userInfo.avatarUrl}}" 
+  mode="aspectFill"
+></image>
+```
 
+然后在 CSS 中添加样式：
 
-方案三：使用占位符文字 ⭐
------------------------------------------
-修改 profile.wxml，添加条件渲染：
-
-<view class="avatar-wrapper">
-  <image 
-    wx:if="{{userInfo.avatarUrl}}"
-    class="user-avatar" 
-    src="{{userInfo.avatarUrl}}" 
-    mode="aspectFill"
-  ></image>
-  <view wx:else class="default-avatar">
-    <text>👤</text>
-  </view>
-</view>
-
-在 profile.wxss 添加样式：
-.default-avatar {
-  width: 140rpx;
-  height: 140rpx;
-  border-radius: 70rpx;
-  background: #f0f0f0;
+```css
+.avatar-emoji {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 80rpx;
-  margin-right: 30rpx;
+  font-size: 60rpx;
+  color: #fff;
 }
+```
 
-========================================
-  快速测试
-========================================
+### 方法3：使用微信默认头像链接
 
-如果只是想快速测试，暂时忽略默认头像：
+```xml
+<image 
+  class="user-avatar" 
+  src="{{userInfo.avatarUrl || 'https://thirdwx.qlogo.cn/mmopen/vi_32/POgEwh4mIHO4nibH0KlMECNjjGxQUq24ZEaGT4poC6icRiccVGKSyXwibcPq4BWmiaIGuG1icwxaQX6grC9VemZoJ8rg/132'}}" 
+  mode="aspectFill"
+></image>
+```
 
-修改 profile.wxml 第 10 行：
-src="{{userInfo.avatarUrl}}"
+## 推荐尺寸
 
-说明：未登录时头像可能显示空白，但不影响功能测试。
+- **最小**: 100x100px
+- **推荐**: 200x200px
+- **最佳**: 512x512px
 
-========================================
-  推荐方案
-========================================
+## 当前状态
 
-开发测试阶段：使用方案一（微信默认头像URL）
-正式上线前：使用方案二（添加设计的默认头像图片）
+目前代码引用了 `/images/default-avatar.png`，如果该文件不存在，可能显示空白或错误图标。
 
-========================================
+建议：
+1. 快速解决：使用方法3（微信默认头像链接）
+2. 长期方案：准备一张品牌化的默认头像图片
 
+## 临时解决方案
+
+我已经在代码中使用了一个备用的网络图片链接。如果本地文件不存在，会尝试加载网络图片。

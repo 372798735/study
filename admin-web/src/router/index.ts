@@ -115,6 +115,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import("@/views/dictionary/index.vue"),
         meta: { title: "字典管理", icon: "SetUp" },
       },
+      {
+        path: "users",
+        name: "Users",
+        component: () => import("@/views/users/index.vue"),
+        meta: { title: "账号管理", icon: "User" },
+      },
     ],
   },
   {
