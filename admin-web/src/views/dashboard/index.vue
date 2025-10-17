@@ -146,19 +146,9 @@ import {
   LegendComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
-import {
-  getDashboard,
-  getQuestionStats,
-  getVideoStats,
-} from "@/api/statistics";
 import { getQuestions } from "@/api/questions";
 import { getVideos } from "@/api/videos";
 import { formatDate, formatDuration } from "@/utils/format";
-import type {
-  DashboardData,
-  QuestionStats,
-  VideoStats,
-} from "@/types/statistics";
 import type { Question } from "@/types/question";
 import type { Video } from "@/types/video";
 
@@ -171,11 +161,6 @@ use([
 ]);
 
 const router = useRouter();
-
-// 统计数据
-const dashboardData = ref<DashboardData | null>(null);
-const questionStats = ref<QuestionStats | null>(null);
-const videoStats = ref<VideoStats | null>(null);
 
 // 最近数据
 const recentQuestions = ref<Question[]>([]);
@@ -261,55 +246,45 @@ const videoCategoryChart = ref({
   ],
 });
 
-// 获取仪表板数据
-const loadDashboardData = async () => {
+// 加载统计数据（简化版本，基于实际数据计算）
+const loadStats = async () => {
   try {
-    const response = await getDashboard();
-    dashboardData.value = response.data;
+    // 获取题目数据并计算统计
+    const questionsResponse = await getQuestions({ page: 1, limit: 1000 });
+    const questions = questionsResponse.data.list;
+    statsCards.value[1].value = questionsResponse.data.total;
 
-    // 更新统计卡片
-    statsCards.value[0].value = dashboardData.value.overview.totalUsers;
-    statsCards.value[1].value = dashboardData.value.overview.totalQuestions;
-    statsCards.value[2].value = dashboardData.value.overview.totalVideos;
-    statsCards.value[3].value = dashboardData.value.overview.totalRecords;
-  } catch (error) {
-    console.error("获取仪表板数据失败:", error);
-  }
-};
+    // 计算题目类型分布
+    const typeMap: Record<string, number> = {};
+    questions.forEach((q) => {
+      typeMap[q.type] = (typeMap[q.type] || 0) + 1;
+    });
+    questionTypeChart.value.series[0].data = Object.entries(typeMap).map(
+      ([type, count]) => ({
+        value: count,
+        name: getTypeText(type),
+      })
+    );
 
-// 获取题目统计
-const loadQuestionStats = async () => {
-  try {
-    const response = await getQuestionStats();
-    questionStats.value = response.data;
+    // 获取视频数据并计算统计
+    const videosResponse = await getVideos({ page: 1, limit: 1000 });
+    const videos = videosResponse.data.list;
+    statsCards.value[2].value = videosResponse.data.total;
 
-    // 更新题目类型图表
-    questionTypeChart.value.series[0].data = questionStats.value.byType.map(
-      (item) => ({
-        value: item.count,
-        name: getTypeText(item.type),
+    // 计算视频分类分布
+    const categoryMap: Record<string, number> = {};
+    videos.forEach((v) => {
+      const category = v.category || "未分类";
+      categoryMap[category] = (categoryMap[category] || 0) + 1;
+    });
+    videoCategoryChart.value.series[0].data = Object.entries(categoryMap).map(
+      ([category, count]) => ({
+        value: count,
+        name: category,
       })
     );
   } catch (error) {
-    console.error("获取题目统计失败:", error);
-  }
-};
-
-// 获取视频统计
-const loadVideoStats = async () => {
-  try {
-    const response = await getVideoStats();
-    videoStats.value = response.data;
-
-    // 更新视频分类图表
-    videoCategoryChart.value.series[0].data = videoStats.value.byCategory.map(
-      (item) => ({
-        value: item.count,
-        name: item.category,
-      })
-    );
-  } catch (error) {
-    console.error("获取视频统计失败:", error);
+    console.error("获取统计数据失败:", error);
   }
 };
 
@@ -386,9 +361,7 @@ const getDifficultyText = (difficulty: string) => {
 };
 
 onMounted(() => {
-  loadDashboardData();
-  loadQuestionStats();
-  loadVideoStats();
+  loadStats();
   loadRecentQuestions();
   loadRecentVideos();
 });

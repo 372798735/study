@@ -8,26 +8,26 @@
   <!-- 功能网格 -->
   <view class="function-grid">
     <!-- 第一行 -->
-    <view class="grid-item grid-item-gray" bindtap="goToObjectiveQuestions">
+    <view class="grid-item grid-item-light" bindtap="goToObjectiveQuestions">
       <view class="grid-icon">📝</view>
       <text class="grid-title">训练系统</text>
       <text class="grid-subtitle">(客观题)</text>
       <view class="grid-badge">HOT</view>
     </view>
-    <view class="grid-item grid-item-gray" bindtap="goToVideoNotes">
+    <view class="grid-item grid-item-light" bindtap="goToVideoNotes">
       <view class="grid-icon">📹</view>
       <text class="grid-title">视频号笔记</text>
       <view class="grid-corner"></view>
     </view>
 
     <!-- 第二行 -->
-    <view class="grid-item grid-item-blue" bindtap="goToSubjectiveQuestions">
+    <view class="grid-item grid-item-light" bindtap="goToSubjectiveQuestions">
       <view class="grid-icon">✍️</view>
       <text class="grid-title">训练系统</text>
       <text class="grid-subtitle">(主观题)</text>
       <view class="grid-corner"></view>
     </view>
-    <view class="grid-item grid-item-blue" bindtap="goToStudyVideos">
+    <view class="grid-item grid-item-light" bindtap="goToStudyVideos">
       <view class="grid-icon">🎬</view>
       <text class="grid-title">学习视频</text>
       <view class="grid-badge">NEW</view>

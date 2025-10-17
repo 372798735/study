@@ -39,11 +39,6 @@
           <span>笔记下载管理</span>
         </el-menu-item>
 
-        <el-menu-item index="/statistics">
-          <el-icon><DataAnalysis /></el-icon>
-          <span>数据统计</span>
-        </el-menu-item>
-
         <el-menu-item index="/dictionary">
           <el-icon><SetUp /></el-icon>
           <span>字典管理</span>
@@ -122,7 +117,6 @@ import {
   VideoPlay,
   Notebook,
   Download,
-  DataAnalysis,
   Setting,
   SetUp,
   Fold,

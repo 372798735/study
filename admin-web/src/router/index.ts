@@ -98,12 +98,6 @@ const routes: RouteRecordRaw[] = [
         meta: { title: "编辑资源", hidden: true },
       },
       {
-        path: "statistics",
-        name: "Statistics",
-        component: () => import("@/views/statistics/index.vue"),
-        meta: { title: "数据统计", icon: "DataAnalysis" },
-      },
-      {
         path: "settings",
         name: "Settings",
         component: () => import("@/views/settings/index.vue"),
